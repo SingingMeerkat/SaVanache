@@ -1,48 +1,90 @@
 <template>
   <div class="container">
-    <h1>Savanache</h1> 
+    <h1>SaVanache</h1>
     <div  class="chromosomes-grid">
-      <div v-for="(chromosome, index) in chromosomes" :key="index">
-          <Chart :chromosome="chromosome" :index="index" />
+      <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index)" >
+          <Chart :chromosome="chromosome" :index="index"/>
       </div>
+    </div>
+    <hr>
+    <div>
+        <Chromosome v-if="display" :name="name"/>
     </div>
   </div>
 </template>
 
 <script>
 import Chart from "./components/Chart.vue";
-import chromosomes from "./data.json"
+import Chromosome from './components/Chromosome.vue';
+import chromosomes from "./chromosomes.json"
+import sources from "./sources.json"
 
 export default {
   name: "App",
-   components: {
+  components: {
     Chart: Chart,
+    Chromosome: Chromosome,
   },
   data() {
     return {
-      chromosomes : chromosomes,
+      chromosomes,
+      sources,
+      display: false,
+      name:""
+    }
+  },
+   methods: {
+    displayCurrentChrom(id) {
+        this.name = id
+        this.display = true
     }
   },
  
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
-.container {
-  width: 95%;
-  margin: 0 auto;
+body {
+  font-size: "Arial";
 
-  h1 {
-    text-align: center;
-  }
+    .container {
+      margin: 0 auto;
+      width: 90%;
+      text-align: center;
 
-  .chromosomes-grid {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: 1fr 1fr 1fr;
-  }
+      hr {
+        margin: 40px 0;
+      }
+
+      .chromosomes-grid {
+        margin: 0 auto;
+        padding: 2rem 0;
+        width: 75%;
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        grid-template-rows: 1fr 1fr;
+        overflow-x: scroll;
+
+        &::-webkit-scrollbar {
+          width:100%;
+        }
+
+        &::-webkit-scrollbar-track {
+          background-color: #e4e4e4;
+          border-radius: 100px;
+          border-top: 5px solid #fff;
+          border-bottom: 5px solid #fff;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background-color: #9579a6;
+          border-radius: 100px;
+        }
+      }
+
+    }
 }
+
 
 </style>

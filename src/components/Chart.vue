@@ -1,37 +1,46 @@
 <template>
-  <div class="chart-vue">
-      <svg
-        :height="height"
-        :width="width"
-        :viewBox="viewBox"
-      >
-      <g :transform="transform">
-        <path
-          fill="none"
-          stroke="steelblue"
-          :d="line"
-        >
-        </path>
-      </g>
-    </svg>
-  </div>
+    <div class="chart-vue">
+          <svg
+            :height="height"
+            :width="width"
+            :viewBox="viewBox"
+          >
+            <text x="80" y="180"
+              font-family="Arial"
+              font-size="9">
+              {{ index }}
+            </text>
+
+          <g :transform="transform">
+            <path
+              fill="none"
+              stroke="#9579a6"
+              stroke-width= "2"
+              :d="line"
+            >
+            </path>
+          </g>
+        </svg>
+      </div>
 </template>
 
 <script>
 import * as d3 from "d3";
 
+
 export default {
   name: "Chart",
-  props: ["chromosome"],
+  
+  props: ["chromosome", "index"],
   data() {
     return {
       marginTop: 20,
       marginRight: 0,
-      marginBottom: 10,
-      marginLeft: 40,
+      marginBottom: 20,
+      marginLeft: 60,
       height: 180,
-      width: 180,
-      transform : "translate(50.30)"
+      width: 210,
+      transform : "translate(50,30)",
     };
   },
   computed: {
@@ -60,5 +69,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.chart-vue {
+  svg {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
 </style>
