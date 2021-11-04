@@ -1,25 +1,63 @@
 <template>
     <div>
         <h2> {{ name }} </h2> 
+        <svg
+            :width="width"
+            :height="height"
+            :viewBox="viewBox"
+          >
+
+          <g :transform="transform">
+            <path
+              fill="none"
+              stroke="#9579a6"
+              stroke-width= "2"
+              :d="line"
+            >
+            </path>
+          </g>
+        </svg>
     </div>
 </template>
 
 <script>
-//import * as d3 from "d3";
+
+import * as d3 from "d3";
 
 export default {
   name: "Chromosome",
-  props: ["name"],
+  props: ["chromosome","name"],
   data() {
     return {
-
+      marginTop: 20,
+      marginRight: 0,
+      marginBottom: 20,
+      marginLeft: 60,
+      height: 180,
+      width: 210,
+      transform : "translate(50,30)",
     };
   },
-  methods: {
-   
-  },
   computed: {
-    
+    path() {
+      const x = d3.scaleLinear()
+                  .domain([0, 250000000])
+                  .range([ 0, this.width - this.marginLeft - this.marginRight])
+
+      const y = d3.scaleLinear()
+                  .domain([0, 85000])
+                  .range([ this.height - this.marginTop - this.marginBottom, 0 ])
+
+      return d3.line()
+        .x(d => x(d.position))
+        .y(d => y(d.varIndex));
+    },
+    line() {
+      return this.path(this.chromosome)
+    },
+    viewBox() {
+      return `0 0 ${this.width} ${this.height}`;
+    }
   }
   
 };

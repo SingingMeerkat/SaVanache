@@ -2,13 +2,13 @@
   <div class="container">
     <h1>SaVanache</h1>
     <div  class="chromosomes-grid">
-      <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index)" >
+      <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index, chromosome)" >
           <Chart :chromosome="chromosome" :index="index"/>
       </div>
     </div>
     <hr>
     <div>
-        <Chromosome v-if="display" :name="name"/>
+        <Chromosome v-if="display" :name="name" :chromosome="chromosome" />
     </div>
   </div>
 </template>
@@ -30,12 +30,14 @@ export default {
       chromosomes,
       sources,
       display: false,
-      name:""
+      name:"",
+      chromosome: {}
     }
   },
    methods: {
-    displayCurrentChrom(id) {
+    displayCurrentChrom(id, chrom) {
         this.name = id
+        this.chromosome = chrom
         this.display = true
     }
   },
