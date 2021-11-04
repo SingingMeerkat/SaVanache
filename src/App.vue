@@ -54,6 +54,9 @@ body {
       margin: 0 auto;
       width: 90%;
       text-align: center;
+      h1 {
+        margin-bottom: 0;
+      }
 
       hr {
         margin: 40px 0;
@@ -61,7 +64,7 @@ body {
 
       .chromosomes-grid {
         margin: 0 auto;
-        padding: 2rem 0;
+        padding-bottom: 2rem;
         width: 75%;
         display: grid;
         grid-template-columns: repeat(12, 1fr);
