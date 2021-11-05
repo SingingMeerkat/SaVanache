@@ -65,7 +65,7 @@ body {
       .chromosomes-grid {
         margin: 0 auto;
         padding-bottom: 2rem;
-        width: 75%;
+        width: 95%;
         display: grid;
         grid-template-columns: repeat(12, 1fr);
         grid-template-rows: 1fr 1fr;

@@ -37,9 +37,9 @@ export default {
       marginTop: 20,
       marginRight: 0,
       marginBottom: 20,
-      marginLeft: 60,
+      marginLeft: 30,
       height: 180,
-      width: 210,
+      width: 600,
       transform : "translate(50,30)",
     };
   },
