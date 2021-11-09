@@ -39,18 +39,18 @@ export default {
       marginBottom: 20,
       marginLeft: 30,
       height: 180,
-      width: 600,
+      width: 400,
       transform : "translate(50,30)",
     };
   },
   computed: {
     path() {
       const x = d3.scaleLinear()
-                  .domain([0, 250000000])
+                  .domain([0, d3.max(this.chromosome, (d => d.position))])
                   .range([ 0, this.width - this.marginLeft - this.marginRight])
 
       const y = d3.scaleLinear()
-                  .domain([0, 85000])
+                  .domain([0, d3.max(this.chromosome, (d => d.varIndex))])
                   .range([ this.height - this.marginTop - this.marginBottom, 0 ])
 
       return d3.line()

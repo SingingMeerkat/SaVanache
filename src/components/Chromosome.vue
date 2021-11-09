@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
         <h2> {{ name }} </h2> 
         <svg
             :width="width"
@@ -13,19 +13,15 @@
           </defs>
           
           <g :transform="transform" fill="url(#lingrad)" class="group">
-            <line :x1="x1Line1" :y1="y1Line1" :x2="x2Line1" :y2="y2Line1" style="stroke:rgb(0,0,0);stroke-width:3" />
-            <line :x1="x1Line2" :y1="y1Line2" :x2="x2Line2" :y2="y2Line2" style="stroke:rgb(0,0,0);stroke-width:3" />
+            <line class="eventClass" :x1="x1Line1" :y1="y1Line1" :x2="x2Line1" :y2="y2Line1" style="stroke:rgb(0,0,0);stroke-width:5" />
+            <line class="eventClass" :x1="x1Line2" :y1="y1Line2" :x2="x2Line2" :y2="y2Line2" style="stroke:rgb(0,0,0);stroke-width:5" />
             <path
-              stroke="#9579a6"
-              stroke-width= "2"
-              :d="line"
+              :d="`${line} ${x1Line2} ${y1Line2} ${x2Line2} ${y2Line2} ${invertedLine} ${x1Line1} ${y1Line1}`"
             >
             </path>
-            <polygon :points="`${x1Line1},${y1Line1} ${x2Line1},${y2Line1} ${x2Line2},${y2Line2} ${x1Line2},${y1Line2}`"/>
             <path
-              stroke="#9579a6"
-              stroke-width= "2"
-              :d="invertedLine"
+              stroke="black"
+              :d="`${line} ${invertedLine}`"
             >
             </path>
           </g>
@@ -47,7 +43,7 @@ export default {
       marginBottom: 360,
       marginLeft: 100,
       height: 480,
-      width: 1000,
+      width: 1200,
       transform: "translate(25,15)",
       x1Line1: "",
       y1Line1: "",
@@ -66,6 +62,9 @@ export default {
     },
     getMaxWidth(arr) {
       return d3.max(arr, d => d.position )
+    },
+    getReverseArr(arr) {
+      return arr.reverse()
     }
   },
   computed: {
@@ -131,7 +130,7 @@ export default {
       return this.path(this.chromosome)
     },
     invertedLine() {
-      return this.invertedPath(this.chromosome)
+      return this.invertedPath(this.getReverseArr(this.chromosome))
     },
     viewBox() {
       return `0 0 ${this.width} ${this.height}`
