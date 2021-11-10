@@ -53,6 +53,8 @@ export default {
       y1Line2: "",
       x2Line2: "",
       y2Line2: "",
+      domainY: null,
+      domainYInverted: null,
       colorRange: ["#351D0F", "#602C17", "#720825", "#840A77", "#8332CF", "#5F63E5", "#5687E2", "#3B97C6", "#32A69D", "#18BD78", "#3CD644", "#A2E04D", "#CDD41C", "#DDD435", "#FCDF91"]
     };
   },
@@ -65,75 +67,86 @@ export default {
     },
     getReverseArr(arr) {
       return arr.reverse()
-    }
+    },
+
   },
-  computed: {
+    computed: {
     path() {
-      const x = d3.scaleLinear()
-                  .domain([0, 250000000])
-                  .range([0, this.width - this.marginLeft - this.marginRight])
-
-      const y = d3.scaleLinear()
-                  .domain([-10000, 85000])
-                  .range([ this.height - this.marginTop - this.marginBottom, 0 ])
-
-      return d3.line()
-        .x((d, i) => {
-            if(i === 0) {
-              this.x1Line1 = x(d.position) 
-            }
-            if(i === this.getLength(this.chromosome)-1) {
-              this.x1Line2 = x(d.position)
-            }
-            return x(d.position)
-        } )
-        .y((d, i) => {
-            if(i===0) {
-                this.y1Line1 = y(d.varIndex)
-            }
-            if(i === this.getLength(this.chromosome)-1) {
-              this.y1Line2 = y((d.varIndex))
-            }
-            return y(d.varIndex)
-        })
+        const maxX = d3.max(this.chromosome, (d => d.position))
+        const maxY = d3.max(this.chromosome, (d => d.varIndex))
+        const x = d3.scaleLinear()
+                    .domain([0, maxX])
+                    .range([0, this.width - this.marginLeft - this.marginRight])
+        const y = d3.scaleLinear()
+                    .domain([this.domainY, maxY])
+                    .range([ this.height - this.marginTop - this.marginBottom, 0 ])
+        return d3.line()
+            .x((d, i) => {
+                if(i === 0) {
+                this.x1Line1 = x(d.position) 
+                }
+                if(i === this.getLength(this.chromosome)-1) {
+                this.x1Line2 = x(d.position)
+                }
+                return x(d.position)
+            } )
+            .y((d, i) => {
+                if(i===0) {
+                    this.y1Line1 = y(d.varIndex)
+                }
+                if(i === this.getLength(this.chromosome)-1) {
+                this.y1Line2 = y((d.varIndex))
+                }
+                if(d.varIndex < 20 && maxY < 20) {
+                    this.domainY=-3 
+                } else if(d.varIndex > 20 && d.varIndex < 500 && maxY > 20 && maxY < 500){
+                    this.domainY= 0
+                } else {
+                    this.domainY=-10000
+                }
+                 return y(d.varIndex)
+                
+            })
     },
     invertedPath() {
-      const x = d3.scaleLinear()
-                  .domain([0, 250000000])
-                  .range([0, this.width - this.marginLeft - this.marginRight])
+        const maxX = d3.max(this.chromosome, (d => d.position))
+        const maxY = d3.max(this.chromosome, (d => d.varIndex))
+        const x = d3.scaleLinear()
+                    .domain([0, maxX])
+                    .range([0, this.width - this.marginLeft - this.marginRight])
+        const y = d3.scaleLinear()
+                    .domain([this.domainYInverted, maxY])
+                    .range([ this.height - this.marginTop - this.marginBottom, 0 ])
+        
+        return d3.line()
+            .x((d, i) => {
+                if(i===0) {
+                this.x2Line1 = x(d.position)
+                }
+                if(i === this.getLength(this.chromosome)-1) {
+                this.x2Line2 = x(d.position)
+                }
+                return x(d.position)
+            } )
+            .y((d, i) => {
+                if(i===0) {
+                    this.y2Line1 = y((d.varIndex*-1))
+                }
+                if(i === this.getLength(this.chromosome)-1) {
+                    this.y2Line2 = y((d.varIndex*-1))
+                }
 
-      const y = d3.scaleLinear()
-                  .domain([0, 85000])
-                  .range([ this.height - this.marginTop - this.marginBottom, 0 ])
-      
-      return d3.line()
-        .x((d, i) => {
-            if(i===0) {
-              this.x2Line1 = x(d.position)
-            }
-            if(i === this.getLength(this.chromosome)-1) {
-              this.x2Line2 = x(d.position)
-            }
-            return x(d.position)
-        } )
-        .y((d, i) => {
-            if(i===0) {
-                this.y2Line1 = y((d.varIndex*-1))
-            }
-            if(i === this.getLength(this.chromosome)-1) {
-              this.y2Line2 = y((d.varIndex*-1))
-            }
-            return y((d.varIndex*-1))
-        })
+                return y(d.varIndex*-1)
+            })
     },
     line() {
-      return this.path(this.chromosome)
+        return this.path(this.chromosome)
     },
     invertedLine() {
-      return this.invertedPath(this.getReverseArr(this.chromosome))
+        return this.invertedPath(this.getReverseArr(this.chromosome))
     },
     viewBox() {
-      return `0 0 ${this.width} ${this.height}`
+        return `0 0 ${this.width} ${this.height}`
     }
   }
   
@@ -141,5 +154,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.eventClass {
+  cursor: move;
+}
 </style>
