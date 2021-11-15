@@ -36,6 +36,7 @@
         ></path>
         <path stroke="black" fill="none" :d="`${line} ${invertedLine}`"></path>
       </g>
+      
     </svg>
   </div>
 </template>
@@ -68,6 +69,7 @@ export default {
       deltaY1: "",
       deltaX2: "",
       deltaY2: "",
+      xIndex: null,
       colorRange: [
         "#351D0F",
         "#602C17",
@@ -98,22 +100,23 @@ export default {
     getReverseArr(arr) {
       return arr.reverse();
     },
-
+    closestPosition(array, goal) {
+        return array.reduce((prev, curr) => Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
+    },
     dragstarted() {
       d3.select(".eventLine").raise().attr("active", true);
     },
+    
     dragged(event) {
-        console.log("event", event);
+       // console.log("event", event);
 
         this.deltaX1 = event.x;
         this.deltaY1 = event.y;
         this.deltaX2 = event.x;
         this.deltaY2 = event.y+this.y2Line1;
-
-        // d.x = event.x
-        // d.y = event.y
-        console.log(event.x);
-        console.log(event.y);
+ 
+        // console.log(event.x);
+        // console.log(event.y);
 
         let current = d3.select(".eventLine");
 
@@ -147,84 +150,85 @@ export default {
         .scaleLinear()
         .domain([this.domainY, maxY])
         .range([this.height - this.marginTop - this.marginBottom, 0]);
+        
+        let positionArr = [];
+
       return d3
         .line()
         .x((d, i) => {
-          if (i === 0) {
-            this.x1Line1 = x(d.position);
-          }
-          if (i === this.getLength(this.chromosome) - 1) {
-            this.x1Line2 = x(d.position);
-          }
-        //   if(x(d[i].position)<this.deltaX1<x(d[i+1].position)) {
-        //       this.x1Line1 = x(d.position);
-        //   }
+            positionArr.push(x(this.chromosome[i].position))
+            const closePosition = this.closestPosition(positionArr, this.deltaX1)
 
-          return x(d.position);
+            if (i === 0) {
+                this.x1Line1 = x(d.position);
+                this.x2Line1 = x(d.position);
+            }
+            if (i === this.getLength(this.chromosome) - 1) {
+                this.x1Line2 = x(d.position);
+                this.x2Line2 = x(d.position);
+            }
+            if(closePosition) {
+                this.x1Line1 = closePosition
+                this.x2Line1 = closePosition
+                this.xIndex = positionArr.indexOf(closePosition)
+            }
+
+            return x(d.position);
         })
         .y((d, i) => {
-          if (i === 0) {
-            this.y1Line1 = y(d.varIndex);
-          }
-          if (i === this.getLength(this.chromosome) - 1) {
-            this.y1Line2 = y(d.varIndex);
-          }
-        //   if(y(d[i].varIndex)<this.deltaY1<y(d[i+1].varIndex)) {
-        //       this.y1Line1 = y(d.varIndex);
-        //   }
-          if (d.varIndex < 20 && maxY < 20) {
-            this.domainY = -3;
-          } else if (
-            d.varIndex > 20 &&
-            d.varIndex < 500 &&
-            maxY > 20 &&
-            maxY < 500
-          ) {
-            this.domainY = 0;
-          } else {
-            this.domainY = -10000;
-          }
-          return y(d.varIndex);
+            if(i === this.xIndex) {
+                this.y1Line1 = y(d.varIndex);
+            }
+            if (i === 0) {
+                this.y1Line1 = y(d.varIndex);
+            }
+            if (i === this.getLength(this.chromosome) - 1) {
+                this.y1Line2 = y(d.varIndex);
+            }
+            if (d.varIndex < 20 && maxY < 20) {
+                this.domainY = -3;
+            } else if (
+                d.varIndex > 20 &&
+                d.varIndex < 500 &&
+                maxY > 20 &&
+                maxY < 500
+            ) {
+                this.domainY = 0;
+            } else {
+                this.domainY = -10000;
+            }
+            return y(d.varIndex);
         });
     },
     invertedPath() {
-      const maxX = d3.max(this.chromosome, (d) => d.position);
-      const maxY = d3.max(this.chromosome, (d) => d.varIndex);
-      const x = d3
-        .scaleLinear()
-        .domain([0, maxX])
-        .range([0, this.width - this.marginLeft - this.marginRight]);
-      const y = d3
-        .scaleLinear()
-        .domain([0, maxY])
-        .range([this.height - this.marginTop - this.marginBottom, 0]);
+        const maxX = d3.max(this.chromosome, (d) => d.position);
+        const maxY = d3.max(this.chromosome, (d) => d.varIndex);
+        const x = d3
+            .scaleLinear()
+            .domain([0, maxX])
+            .range([0, this.width - this.marginLeft - this.marginRight]);
+        const y = d3
+            .scaleLinear()
+            .domain([0, maxY])
+            .range([this.height - this.marginTop - this.marginBottom, 0]);
+        return d3
+            .line()
+            .x((d) => {
 
-      return d3
-        .line()
-        .x((d, i) => {
-          if (i === 0) {
-            this.x2Line1 = x(d.position);
-          }
-          if (i === this.getLength(this.chromosome) - 1) {
-            this.x2Line2 = x(d.position);
-          }
-        //   if(x(d[i].position)<this.deltaX2<x(d[i+1].position)) {
-        //       this.x2Line1 = x(d.position);
-        //   }
-          return x(d.position);
-        })
-        .y((d, i) => {
-          if (i === 0) {
-            this.y2Line1 = y(d.varIndex * -1);
-          }
-          if (i === this.getLength(this.chromosome) - 1) {
-            this.y2Line2 = y(d.varIndex * -1);
-          }
-        //   if(y(d[i].varIndex)<this.deltaY2<y(d[i+1].varIndex)) {
-        //       this.y2Line2 = y(d.varIndex * -1)
-        //   }
-          return y(d.varIndex * -1);
-        });
+                    return x(d.position);
+                })
+            .y((d, i) => {
+                if(i === this.xIndex) {
+                    this.y2Line1 = y(d.varIndex * -1)
+                }
+                if (i === 0) {
+                    this.y2Line1 = y(d.varIndex * -1);
+                }
+                if (i === this.getLength(this.chromosome) - 1) {
+                    this.y2Line2 = y(d.varIndex * -1);
+                }
+                return y(d.varIndex * -1);
+            });
     },
     line() {
       return this.path(this.chromosome);
