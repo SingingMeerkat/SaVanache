@@ -8,7 +8,7 @@
     </div>
     <hr>
     <div>
-        <Chromosome v-if="display" :name="name" :chromosome="chromosome" />
+        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" />
     </div>
   </div>
 </template>
@@ -31,14 +31,41 @@ export default {
       sources,
       display: false,
       name:"",
+      colorRange: [
+        "#351D0F",
+        "#602C17",
+        "#720825",
+        "#840A77",
+        "#8332CF",
+        "#5F63E5",
+        "#5687E2",
+        "#3B97C6",
+        "#32A69D",
+        "#18BD78",
+        "#3CD644",
+        "#A2E04D",
+        "#CDD41C",
+        "#DDD435",
+        "#FCDF91",
+      ],
+      source:[],
       chromosome: {}
     }
   },
    methods: {
+    getElementsBySources () {
+        let duplicateSources = []
+        this.sources.map(element => {
+          return this.name === element.sourceName || this.name === element.targetName ? duplicateSources.push(element) : ""
+        })
+        if (duplicateSources.length === 0) return null;
+        this.source = duplicateSources
+    },
     displayCurrentChrom(id, chrom) {
         this.name = id
         this.chromosome = chrom
         this.display = true
+        this.getElementsBySources()
     }
   },
  

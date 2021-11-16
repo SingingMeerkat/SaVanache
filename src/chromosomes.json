@@ -1,5 +1,5 @@
 {
-    "chromosome1" : [
+    "chr1" : [
          {
             "position": 0,
             "varIndex": 241
@@ -545,7 +545,7 @@
             "varIndex": 1013
           }
     ],
-    "chromosome2" : [
+    "chr2" : [
         {
           "position": 0,
           "varIndex": 0
@@ -1091,7 +1091,7 @@
           "varIndex": 3409
         }
     ],
-    "chromosome3" : [
+    "chr3" : [
         {
           "position": 0,
           "varIndex": 117
@@ -1637,7 +1637,7 @@
           "varIndex": 186
         }
     ],
-    "chromosome4" :[
+    "chr4" :[
         {
           "position": 0,
           "varIndex": 12
@@ -2183,7 +2183,7 @@
           "varIndex": 346
         }
     ],
-    "chromosome5" : [
+    "chr5" : [
         {
           "position": 0,
           "varIndex": 112
@@ -2729,7 +2729,7 @@
           "varIndex": 395
         }
     ],
-    "chromosome6" : [
+    "chr6" : [
       {
         "position": 0,
         "varIndex": 636
@@ -3275,7 +3275,7 @@
         "varIndex": 757
       }
     ],
-    "chromosome7" : [
+    "chr7" : [
       {
         "position": 0,
         "varIndex": 27
@@ -3820,7 +3820,7 @@
         "position": 159138663,
         "varIndex": 423
       }
-    ], "chromosome8" : [
+    ], "chr8" : [
       {
         "position": 0,
         "varIndex": 0
@@ -4366,7 +4366,7 @@
         "varIndex": 346
       }
     ],
-    "chromosome9" : [
+    "chr9" : [
       {
         "position": 0,
         "varIndex": 1013
@@ -4912,7 +4912,7 @@
         "varIndex": 241
       }
     ],
-    "chromosome10" : [
+    "chr10" : [
       {
         "position": 0,
         "varIndex": 340
@@ -5458,7 +5458,7 @@
         "varIndex": 0
       }
     ],
-    "chromosome11" : [
+    "chr11" : [
       {
         "position": 0,
         "varIndex": 186
@@ -6004,7 +6004,7 @@
         "varIndex": 117
       }
     ],
-    "chromosome12" : [
+    "chr12" : [
       {
         "position": 0,
         "varIndex": 346
@@ -6550,7 +6550,7 @@
         "varIndex": 12
       }
     ],
-    "chromosome13" : [
+    "chr13" : [
       {
         "position": 0,
         "varIndex": 395
@@ -7096,7 +7096,7 @@
         "varIndex": 112
       }
     ],
-    "chromosome14" : [
+    "chr14" : [
       {
         "position": 0,
         "varIndex": 757
@@ -7642,7 +7642,7 @@
         "varIndex": 636
       }
     ], 
-    "chromosome15": [
+    "chr15": [
       {
         "position": 0,
         "varIndex": 423
@@ -8188,7 +8188,7 @@
         "varIndex": 27
       }
     ],
-    "chromosome16" : [
+    "chr16" : [
       {
         "position": 0,
         "varIndex": 346
@@ -8734,7 +8734,7 @@
         "varIndex": 0
       }
     ],
-    "chromosome17": [
+    "chr17": [
       {
         "position": 0,
         "varIndex": 241
@@ -9280,7 +9280,7 @@
         "varIndex": 241
       }
     ],
-    "chromosome18" : [
+    "chr18" : [
       {
         "position": 0,
         "varIndex": 0
@@ -9826,7 +9826,7 @@
         "varIndex": 0
       }
     ],
-    "chromosome19": [
+    "chr19": [
       {
         "position": 0,
         "varIndex": 117
@@ -10372,7 +10372,7 @@
         "varIndex": 117
       }
     ],
-    "chromosome20" : [
+    "chr20" : [
       {
         "position": 0,
         "varIndex": 12
@@ -10918,7 +10918,7 @@
         "varIndex": 12
       }
     ],
-    "chromosome21" : [
+    "chr21" : [
       {
         "position": 0,
         "varIndex": 112
@@ -11464,7 +11464,7 @@
         "varIndex": 112
       }
     ],
-    "chromosome22" : [
+    "chr22" : [
       {
         "position": 0,
         "varIndex": 636
@@ -12010,7 +12010,7 @@
         "varIndex": 636
       }
     ],
-    "chromosomeX" : [
+    "chrX" : [
       {
         "position": 0,
         "varIndex": 27
@@ -12556,7 +12556,7 @@
         "varIndex": 27
       }
     ],
-    "chromosomeY" : [
+    "chrY" : [
       {
         "position": 0,
         "varIndex": 0
