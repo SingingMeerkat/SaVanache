@@ -55,6 +55,8 @@ export default {
       height: 480,
       width: 1200,
       transform: "translate(30,15)",
+      calculateColorRegion: null,
+      maxDomainX: null,
       x1Line1: null,
       y1Line1: null,
       x2Line1: null,
@@ -81,6 +83,64 @@ export default {
     },
     getMaxY(arr) {
       return d3.max(arr, (d) => d.varIndex);
+    },
+    normalize(min, max) {
+        const delta = max - min;
+        return val => ( (val < min? min: (val > max? max : val)) - min ) / delta;
+    },
+    closestPosition(array, goal) {
+        return array.reduce((prev, curr) => Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
+    },
+    matchingValue(array1, val){
+        return array1.find(element => {
+          if(val === element.norm) {
+            return element.color
+          }
+        })
+    },
+    getColor(arr) {
+        const maxX = this.getMaxX(this.chromosome)
+        let sourceStart = []
+        let sourceStop = []
+        let sourceStartStop = []
+        let normValueStart = []
+        let normValueStop = []
+        let arrColorbyId = []
+        let getClosestStart = []
+        let getClosestStop = []
+        let resultColorStart = []
+        let resultColorStop = []
+        arr.map(element => {
+            if(element.sourceName === this.name) {
+                sourceStart.push(element.sourceStart)
+                sourceStop.push(element.sourceStop)
+            }
+            sourceStartStop = sourceStart.map((item, i) => Object.assign({}, { sourceName: element.sourceName,sourceStart : item, sourceStop : sourceStop[i]} ));
+        })
+
+        sourceStart.map(element => normValueStart.push(element/maxX))
+        sourceStop.map(element => normValueStop.push(element/maxX))
+        let mergeSourceStartAndStop = normValueStart.map((item, i) => Object.assign({}, { sourceStart : item, sourceStop : normValueStop[i]} ));
+
+        this.colorRange.map((_, i) => arrColorbyId.push(i+1))
+        let arrColorNormalized = arrColorbyId.map(this.normalize(1, this.colorRange.length))
+        let mergeColorNorm = this.colorRange.map((item, i) => Object.assign({}, {color: item, norm: arrColorNormalized[i]} ));
+
+        mergeSourceStartAndStop.map(element => {
+          getClosestStart.push(this.closestPosition(arrColorNormalized, element.sourceStart))
+          getClosestStop.push(this.closestPosition(arrColorNormalized, element.sourceStop))
+        })
+        getClosestStart.map(item => {
+          resultColorStart.push(this.matchingValue(mergeColorNorm,item))
+        })
+        getClosestStop.map(item => {
+          resultColorStop.push(this.matchingValue(mergeColorNorm,item))
+        })
+        let colorArrStartStop = resultColorStart.map((item, i) => Object.assign({}, {colorStart: item.color, colorStop: resultColorStop[i].color} ));
+        let getColorBySourceName = sourceStartStop.map((item, i) => Object.assign({}, {sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, colorStart: colorArrStartStop[i].colorStart, colorStop: colorArrStartStop[i].colorStop} ));
+
+        return getColorBySourceName
+        
     },
     getReverseArr(arr) {
       return arr.reverse();
@@ -127,21 +187,16 @@ export default {
             .domain([this.domainY, maxY])
             .range([this.height - this.marginTop - this.marginBottom, 0]);
 
-            //To get each range of color
-            // const calculateColorRegion = x(maxX)/this.colorRange.length
-            // console.log(calculateColorRegion)
         return d3
             .line()
             .x((d, i) => {
-            if (i === 0) {
-                this.x1Line1 = x(d.position);
-                this.x2Line1 = x(d.position);
-            }
-            if (i === this.getLength(this.chromosome) - 1) {
-                this.x1Line2 = x(d.position);
-                this.x2Line2 = x(d.position);
-            }
-            return x(d.position);
+                if (i === 0) {
+                    this.x1Line1 = x(d.position);
+                }
+                if (i === this.getLength(this.chromosome) - 1) {
+                    this.x1Line2 = x(d.position);
+                }
+                return x(d.position);
             })
             .y((d, i) => {
             if (i === 0) {
@@ -179,9 +234,15 @@ export default {
 
       return d3
         .line()
-        .x((d) => {
-          return x(d.position);
-        })
+         .x((d, i) => {
+                if (i === 0) {
+                    this.x2Line1 = x(d.position);
+                }
+                if (i === this.getLength(this.chromosome) - 1) {
+                    this.x2Line2 = x(d.position);
+                }
+                return x(d.position);
+            })
         .y((d, i) => {
           if (i === 0) {
             this.y2Line1 = y(d.varIndex * -1);
@@ -193,13 +254,14 @@ export default {
         });
     },
     line() {
-      return this.path(this.chromosome);
+        return this.path(this.chromosome);
     },
     invertedLine() {
-      return this.invertedPath(this.getReverseArr(this.chromosome));
+        return this.invertedPath(this.getReverseArr(this.chromosome));
     },
     viewBox() {
-      return `0 0 ${this.width} ${this.height}`;
+        this.getColor(this.source)
+        return `0 0 ${this.width} ${this.height}`;
     },
   },
 };

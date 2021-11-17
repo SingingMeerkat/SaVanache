@@ -3,7 +3,7 @@
     <h1>SaVanache</h1>
     <div  class="chromosomes-grid">
       <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index, chromosome)" >
-          <Chart :chromosome="chromosome" :index="index"/>
+          <Chart :chromosome="chromosome" :index="index" :source="source"/>
       </div>
     </div>
     <hr>

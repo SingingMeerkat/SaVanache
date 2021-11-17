@@ -30,8 +30,7 @@ import * as d3 from "d3";
 
 export default {
   name: "Chart",
-  
-  props: ["chromosome", "index"],
+  props: ["chromosome", "index", "source"],
   data() {
     return {
       marginTop: 20,
