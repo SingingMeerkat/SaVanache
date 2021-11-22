@@ -3,7 +3,7 @@
     <h1>SaVanache</h1>
     <div  class="chromosomes-grid">
       <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index, chromosome)" >
-          <Chart :chromosome="chromosome" :index="index" :source="source"/>
+            <Chart :chromosome="chromosome" :index="index" :colorRange="colorRange" :source="source" :sourceByColor="sourceByColor" :target="getSourceByChrom(index)"/>
       </div>
     </div>
     <hr>
@@ -18,6 +18,7 @@ import Chart from "./components/Chart.vue";
 import Chromosome from './components/Chromosome.vue';
 import chromosomes from "./chromosomes.json"
 import sources from "./sources.json"
+import { getColor } from "./helpers/helpers.js"
 
 export default {
   name: "App",
@@ -29,7 +30,7 @@ export default {
     return {
       chromosomes,
       sources,
-      display: false,
+      display: false,   
       name:"",
       colorRange: [
         "#351D0F",
@@ -49,10 +50,16 @@ export default {
         "#FCDF91",
       ],
       source:[],
-      chromosome: {}
+      chromosome: {},
+      sourceByColor: [],
+      fullSourceTargetColor: [],
     }
   },
-   methods: {
+  mounted() {
+
+  },
+  methods: {
+    getColor,
     getElementsBySources () {
         let duplicateSources = []
         this.sources.map(element => {
@@ -61,11 +68,33 @@ export default {
         if (duplicateSources.length === 0) return null;
         this.source = duplicateSources
     },
+    getDataColorSource() {
+      return this.getColor(this.source, this.chromosome, this.colorRange)
+    },
+    getTargetBySource() {
+        let arrayDataColorSource = this.getDataColorSource()
+        const result = this.source.filter((item) => arrayDataColorSource.some(element => item.sourceName === element.sourceName))
+        return result.map((item, i) => Object.assign({}, {svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: arrayDataColorSource[i].colorStart, colorStop: arrayDataColorSource[i].colorStop} ));
+    },
+    getSourceByChrom (index) {
+      let result = []
+       this.fullSourceTargetColor.filter(el => {
+         if(el.targetName === index) {
+             result.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop} ))
+         }
+         
+       } )
+       return result
+    },
     displayCurrentChrom(id, chrom) {
         this.name = id
         this.chromosome = chrom
         this.display = true
         this.getElementsBySources()
+        this.fullSourceTargetColor = this.getTargetBySource()
+        this.sourceByColor = this.getDataColorSource()
+        
+
     }
   },
  

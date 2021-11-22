@@ -19,6 +19,7 @@
               :d="line"
             >
             </path>
+            <circle v-if="displayCircle" cx="10" cy="120" r="10"/>
           </g>
         </svg>
       </div>
@@ -30,9 +31,10 @@ import * as d3 from "d3";
 
 export default {
   name: "Chart",
-  props: ["chromosome", "index", "source"],
+  props: ["chromosome", "index", "source", "colorRange", "sourceByColor", "target"],
   data() {
-    return {
+    return { 
+      displayCircle: false,
       marginTop: 20,
       marginRight: 0,
       marginBottom: 20,
@@ -42,7 +44,22 @@ export default {
       transform : "translate(50,30)",
     };
   },
-  computed: {
+  created() {
+    
+  },
+  mounted() {
+      
+  }, 
+  methods: {
+    displayPerPoints(){
+      if(typeof this.target != 'undefined' && this.target.length > 0) {
+              this.displayCircle = true
+      } else {
+              this.displayCircle = false
+      }
+    },
+  },
+  computed: { 
     path() {
       const x = d3.scaleLinear()
                   .domain([0, d3.max(this.chromosome, (d => d.position))])
@@ -60,6 +77,7 @@ export default {
       return this.path(this.chromosome)
     },
     viewBox() {
+      this.displayPerPoints()      
       return `0 0 ${this.width} ${this.height}`;
     }
   }

@@ -42,10 +42,11 @@
 
 <script>
 import * as d3 from "d3";
+import { getLength, getMaxX, getMaxY, getReverseArr, normalize, closestPosition, matchingValue, getColor} from "../helpers/helpers"
 
 export default {
   name: "Chromosome",
-  props: ["chromosome", "name", "sources", "colorRange", "source"],
+  props: ["chromosome", "name", "sources", "colorRange", "source", "fullSourceTargetColor"],
   data() {
     return {
       marginTop: 20,
@@ -75,76 +76,14 @@ export default {
   },
   created() {},
   methods: {
-    getLength(arr) {
-      return arr.length;
-    },
-    getMaxX(arr) {
-      return d3.max(arr, (d) => d.position);
-    },
-    getMaxY(arr) {
-      return d3.max(arr, (d) => d.varIndex);
-    },
-    normalize(min, max) {
-        const delta = max - min;
-        return val => ( (val < min? min: (val > max? max : val)) - min ) / delta;
-    },
-    closestPosition(array, goal) {
-        return array.reduce((prev, curr) => Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev);
-    },
-    matchingValue(array1, val){
-        return array1.find(element => {
-          if(val === element.norm) {
-            return element.color
-          }
-        })
-    },
-    getColor(arr) {
-        const maxX = this.getMaxX(this.chromosome)
-        let sourceStart = []
-        let sourceStop = []
-        let sourceStartStop = []
-        let normValueStart = []
-        let normValueStop = []
-        let arrColorbyId = []
-        let getClosestStart = []
-        let getClosestStop = []
-        let resultColorStart = []
-        let resultColorStop = []
-        arr.map(element => {
-            if(element.sourceName === this.name) {
-                sourceStart.push(element.sourceStart)
-                sourceStop.push(element.sourceStop)
-            }
-            sourceStartStop = sourceStart.map((item, i) => Object.assign({}, { sourceName: element.sourceName,sourceStart : item, sourceStop : sourceStop[i]} ));
-        })
-
-        sourceStart.map(element => normValueStart.push(element/maxX))
-        sourceStop.map(element => normValueStop.push(element/maxX))
-        let mergeSourceStartAndStop = normValueStart.map((item, i) => Object.assign({}, { sourceStart : item, sourceStop : normValueStop[i]} ));
-
-        this.colorRange.map((_, i) => arrColorbyId.push(i+1))
-        let arrColorNormalized = arrColorbyId.map(this.normalize(1, this.colorRange.length))
-        let mergeColorNorm = this.colorRange.map((item, i) => Object.assign({}, {color: item, norm: arrColorNormalized[i]} ));
-
-        mergeSourceStartAndStop.map(element => {
-          getClosestStart.push(this.closestPosition(arrColorNormalized, element.sourceStart))
-          getClosestStop.push(this.closestPosition(arrColorNormalized, element.sourceStop))
-        })
-        getClosestStart.map(item => {
-          resultColorStart.push(this.matchingValue(mergeColorNorm,item))
-        })
-        getClosestStop.map(item => {
-          resultColorStop.push(this.matchingValue(mergeColorNorm,item))
-        })
-        let colorArrStartStop = resultColorStart.map((item, i) => Object.assign({}, {colorStart: item.color, colorStop: resultColorStop[i].color} ));
-        let getColorBySourceName = sourceStartStop.map((item, i) => Object.assign({}, {sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, colorStart: colorArrStartStop[i].colorStart, colorStop: colorArrStartStop[i].colorStop} ));
-
-        return getColorBySourceName
-        
-    },
-    getReverseArr(arr) {
-      return arr.reverse();
-    },
+    getLength,
+    getMaxX,
+    getMaxY,
+    getReverseArr,
+    normalize,
+    closestPosition,
+    matchingValue,
+    getColor,
     dragstarted() {
       d3.select(".eventLine").raise().attr("active", true);
     },
@@ -176,6 +115,7 @@ export default {
   },
   computed: {
     path() {
+             
         const maxX = this.getMaxX(this.chromosome)
         const maxY = this.getMaxY(this.chromosome)
         const x = d3
@@ -260,11 +200,11 @@ export default {
         return this.invertedPath(this.getReverseArr(this.chromosome));
     },
     viewBox() {
-        this.getColor(this.source)
         return `0 0 ${this.width} ${this.height}`;
     },
   },
 };
+
 </script>
 
 <style lang="scss" scoped>
