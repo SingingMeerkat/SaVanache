@@ -3,7 +3,7 @@
     <h1>SaVanache</h1>
     <div  class="chromosomes-grid">
       <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index, chromosome)" >
-            <Chart :chromosome="chromosome" :index="index" :colorRange="colorRange" :source="source" :sourceByColor="sourceByColor" :target="getSourceByChrom(index)"/>
+            <Chart :chromosome="chromosome" :index="index" :colorRange="colorRange" :source="source" :sourceByColor="sourceByColor" :target="getTargetByChrom(index)"/>
       </div>
     </div>
     <hr>
@@ -76,14 +76,13 @@ export default {
         const result = this.source.filter((item) => arrayDataColorSource.some(element => item.sourceName === element.sourceName))
         return result.map((item, i) => Object.assign({}, {svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: arrayDataColorSource[i].colorStart, colorStop: arrayDataColorSource[i].colorStop} ));
     },
-    getSourceByChrom (index) {
+    getTargetByChrom (index) {
       let result = []
        this.fullSourceTargetColor.filter(el => {
-         if(el.targetName === index) {
-             result.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop} ))
-         }
-         
-       } )
+          if(el.targetName === index) {
+              result.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop} ))
+          } 
+       })
        return result
     },
     displayCurrentChrom(id, chrom) {
@@ -91,10 +90,8 @@ export default {
         this.chromosome = chrom
         this.display = true
         this.getElementsBySources()
-        this.fullSourceTargetColor = this.getTargetBySource()
         this.sourceByColor = this.getDataColorSource()
-        
-
+        this.fullSourceTargetColor = this.getTargetBySource()
     }
   },
  
