@@ -49,8 +49,9 @@ export function getColor(arrSource, arrChromosome, colorRange) {
         if(element.sourceName === this.name) {
             sourceStart.push(element.sourceStart)
             sourceStop.push(element.sourceStop)
+            sourceStartStop = sourceStart.map((item, i) => Object.assign({}, { sourceName: element.sourceName,sourceStart : item, sourceStop : sourceStop[i]} ));
         }
-        sourceStartStop = sourceStart.map((item, i) => Object.assign({}, { sourceName: element.sourceName,sourceStart : item, sourceStop : sourceStop[i]} ));
+        
     })
 
     sourceStart.map(element => normValueStart.push(element/maxX))

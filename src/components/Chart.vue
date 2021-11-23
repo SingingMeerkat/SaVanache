@@ -107,7 +107,7 @@ export default {
           if(typeof this.target != 'undefined' && this.target.length > 0) {
               this.target.map(el => {
                 if((this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart)) < 0) {
-                    newTarget.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: this.getScaleX(el.targetStart), targetStop: this.getScaleX(el.targetStop), targetWidth: (this.getScaleX(el.targetStart) - this.getScaleX(el.targetStop)), colorStart: el.colorStart, colorStop: el.colorStop} ))
+                    newTarget.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: this.getScaleX(el.targetStart), targetStop: this.getScaleX(el.targetStop), targetWidth: (this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart))*-1, colorStart: el.colorStart, colorStop: el.colorStop} ))
                 }
               })
           }
