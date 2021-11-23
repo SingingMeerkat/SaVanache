@@ -55,8 +55,10 @@ export default {
       fullSourceTargetColor: [],
     }
   },
-  mounted() {
-
+   mounted() {
+    this.sources.map(el => {
+       return this.sources.push(Object.assign({}, {svID: el.svID, sourceName: el.targetName, sourceStart: el.targetStart, sourceStop: el.targetStop, strand: el.strand === "+"? "-": "+", targetName: el.sourceName, targetStart: el.sourceStart, targetStop: el.sourceStop} ))
+    }) 
   },
   methods: {
     getColor,
