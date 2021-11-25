@@ -75,7 +75,7 @@ export default {
     };
   },
   created() {},
-  mounted() {}, 
+   
   methods: {},
   computed: { 
     getScaleX() {

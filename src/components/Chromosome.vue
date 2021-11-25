@@ -5,9 +5,9 @@
       <defs>
         <linearGradient id="lingrad" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop
-            v-for="(color, i) in colorRange"
+            v-for="(color, i) in getColorScale"
             :key="i"
-            :offset="`${++i * (100 / colorRange.length)}%`"
+            :offset="`${++i * (100 / getColorScale.length)}%`"
             :stop-color="color"
           ></stop>
         </linearGradient>
@@ -32,7 +32,7 @@
         />
         <path
           fill="url(#lingrad)"
-          :d="`${line} ${x1Line2} ${y1Line2} ${x2Line2} ${y2Line2} ${invertedLine} ${x1Line1} ${y1Line1}`"
+          :d="`${line} ${x1Line2} ${y1Line2} ${x2Line2} ${y2Line2} ${invertedLine} ${x1Line1} ${y1Line1} ${x2Line1} ${y2Line1}`"
         ></path>
         <path stroke="black" fill="none" :d="`${line} ${invertedLine}`"></path>
       </g>
@@ -46,7 +46,7 @@ import { getLength, getMaxX, getMaxY, getReverseArr, normalize, closestPosition,
 
 export default {
   name: "Chromosome",
-  props: ["chromosome", "name", "sources", "colorRange", "source", "fullSourceTargetColor"],
+  props: ["chromosome", "name", "sources", "colorRange", "source"],
   data() {
     return {
       marginTop: 20,
@@ -56,8 +56,6 @@ export default {
       height: 480,
       width: 1200,
       transform: "translate(30,15)",
-      calculateColorRegion: null,
-      maxDomainX: null,
       x1Line1: null,
       y1Line1: null,
       x2Line1: null,
@@ -70,11 +68,11 @@ export default {
       deltaX1: null,
       deltaY1: null,
       deltaX2: null,
-      deltaY2: null,
-      
+      deltaY2: null
     };
   },
   created() {},
+  mounted() {},
   methods: {
     getLength,
     getMaxX,
@@ -114,91 +112,96 @@ export default {
     },
   },
   computed: {
+    getColorScale(){
+        let domainArr = []
+        this.colorRange.map((_,i) => {
+            let divided = d3.max(this.chromosome, (d => d.position))/(this.colorRange.length-1)
+            domainArr.push(divided*i++)
+        })
+        let colorScale = d3.scaleLinear()
+                      .domain(domainArr)
+                      .range(this.colorRange)
+        return this.chromosome.map(d => colorScale(d.position))             
+    },
+    
+    getScaleX() {
+          let x = d3.scaleLinear()
+                  .domain([0, d3.max(this.chromosome, (d => d.position))])
+                  .range([ 0, this.width - this.marginLeft - this.marginRight])
+          return x
+    },
+    getScaleY() {
+          let y = d3.scaleLinear()
+                      .domain([this.domainY, d3.max(this.chromosome, (d => d.varIndex))])
+                      .range([ this.height - this.marginTop - this.marginBottom, 0 ])
+          return y
+    },
+    getInvertedScaleY() {
+          let y = d3.scaleLinear()
+                      .domain([0, d3.max(this.chromosome, (d => d.varIndex))])
+                      .range([ this.height - this.marginTop - this.marginBottom, 0 ])
+          return y
+    },
     path() {
-             
-        const maxX = this.getMaxX(this.chromosome)
+        
         const maxY = this.getMaxY(this.chromosome)
-        const x = d3
-            .scaleLinear()
-            .domain([0, maxX])
-            .range([0, this.width - this.marginLeft - this.marginRight]);
-        const y = d3
-            .scaleLinear()
-            .domain([this.domainY, maxY])
-            .range([this.height - this.marginTop - this.marginBottom, 0]);
-
         return d3
             .line()
             .x((d, i) => {
                 if (i === 0) {
-                    this.x1Line1 = x(d.position);
+                    this.x1Line1 = this.getScaleX(d.position);
+                    this.x2Line1 = this.getScaleX(d.position);
+             
                 }
                 if (i === this.getLength(this.chromosome) - 1) {
-                    this.x1Line2 = x(d.position);
+                    this.x1Line2 = this.getScaleX(d.position);
+                    this.x2Line2 = this.getScaleX(d.position)
+    
                 }
-                return x(d.position);
+                return this.getScaleX(d.position);
             })
             .y((d, i) => {
-            if (i === 0) {
-                this.y1Line1 = y(d.varIndex);
-            }
-            if (i === this.getLength(this.chromosome) - 1) {
-                this.y1Line2 = y(d.varIndex);
-            }
-            if (d.varIndex < 20 && maxY < 20) {
-                this.domainY = -3;
-            } else if (
-                d.varIndex > 20 &&
-                d.varIndex < 500 &&
-                maxY > 20 &&
-                maxY < 500
-            ) {
-                this.domainY = 0;
-            } else {
-                this.domainY = -10000;
-            }
-            return y(d.varIndex);
+                if (i === 0) {
+                    this.y1Line1 = this.getScaleY(d.varIndex);
+                    this.y2Line1 = this.getScaleY(d.varIndex);
+                }
+                if (i === this.getLength(this.chromosome) - 1) {
+                    this.y1Line2 = this.getScaleY(d.varIndex);
+                    this.y2Line2 = this.getScaleY((d.varIndex-this.domainY)*-1)
+                }
+                if (d.varIndex < 20 && maxY < 20) {
+                    this.domainY = -3;
+                } else if (
+                    d.varIndex > 20 &&
+                    d.varIndex < 500 &&
+                    maxY > 20 &&
+                    maxY < 500
+                ) {
+                    this.domainY = 0;
+                } else {
+                    this.domainY = -10000;
+                }
+                return this.getScaleY(d.varIndex);
             });
     },
     invertedPath() {
-      const maxX = this.getMaxX(this.chromosome)
-      const maxY = this.getMaxY(this.chromosome)
-      const x = d3
-        .scaleLinear()
-        .domain([0, maxX])
-        .range([0, this.width - this.marginLeft - this.marginRight]);
-      const y = d3
-        .scaleLinear()
-        .domain([0, maxY])
-        .range([this.height - this.marginTop - this.marginBottom, 0]);
-
       return d3
         .line()
-         .x((d, i) => {
-                if (i === 0) {
-                    this.x2Line1 = x(d.position);
-                }
-                if (i === this.getLength(this.chromosome) - 1) {
-                    this.x2Line2 = x(d.position);
-                }
-                return x(d.position);
+         .x(d => {
+                return this.getScaleX(d.position);
             })
-        .y((d, i) => {
-          if (i === 0) {
-            this.y2Line1 = y(d.varIndex * -1);
-          }
-          if (i === this.getLength(this.chromosome) - 1) {
-            this.y2Line2 = y(d.varIndex * -1);
-          }
-          return y(d.varIndex * -1);
+        .y(d => {
+            
+            return this.getInvertedScaleY(d.varIndex * -1);
         });
     },
     line() {
         return this.path(this.chromosome);
     },
     invertedLine() {
-        return this.invertedPath(this.getReverseArr(this.chromosome));
+        return this.invertedPath(this.chromosome);
     },
+
     viewBox() {
         return `0 0 ${this.width} ${this.height}`;
     },
