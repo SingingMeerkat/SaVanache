@@ -12,27 +12,30 @@
           ></stop>
         </linearGradient>
       </defs>
-
       <g :transform="transform" class="group" @click="dragLines">
         <line
           class="eventLine"
           :x1="x1Line1"
           :y1="y1Line1"
           :x2="x2Line1"
-          :y2="y2Line1"
+          :y2="y2Line2"
           style="stroke: rgb(0, 0, 0); stroke-width: 20"
         />
         <line
         class="eventLine2"
           :x1="x1Line2"
-          :y1="y1Line2"
+          :y1="y2Line2"
           :x2="x2Line2"
-          :y2="y2Line2"
+          :y2="y2Line1"
           style="stroke: rgb(0, 0, 0); stroke-width: 20"
         />
+      </g>
+
+      <g :transform="transform">
+        
         <path
           fill="url(#lingrad)"
-          :d="`${line} ${x1Line2} ${y1Line2} ${x2Line2} ${y2Line2} ${invertedLine} ${x1Line1} ${y1Line1} ${x2Line1} ${y2Line1}`"
+          :d="`${line} ${x2Line2} ${y2Line2} ${x1Line2} ${y1Line2} ${invertedLine} ${x2Line1} ${y2Line1} ${x1Line1} ${y1Line1}`"
         ></path>
         <path stroke="black" fill="none" :d="`${line} ${invertedLine}`"></path>
       </g>
@@ -148,11 +151,7 @@ export default {
         return d3
             .line()
             .x((d, i) => {
-                if (i === 0) {
-                    this.x1Line1 = this.getScaleX(d.position);
-                    this.x2Line1 = this.getScaleX(d.position);
-             
-                }
+                
                 if (i === this.getLength(this.chromosome) - 1) {
                     this.x1Line2 = this.getScaleX(d.position);
                     this.x2Line2 = this.getScaleX(d.position)
@@ -161,12 +160,9 @@ export default {
                 return this.getScaleX(d.position);
             })
             .y((d, i) => {
-                if (i === 0) {
-                    this.y1Line1 = this.getScaleY(d.varIndex);
-                    this.y2Line1 = this.getScaleY(d.varIndex);
-                }
+               
                 if (i === this.getLength(this.chromosome) - 1) {
-                    this.y1Line2 = this.getScaleY(d.varIndex);
+                    this.y1Line2 = this.getScaleY((d.varIndex-this.domainY)*-1);
                     this.y2Line2 = this.getScaleY((d.varIndex-this.domainY)*-1)
                 }
                 if (d.varIndex < 20 && maxY < 20) {
@@ -187,13 +183,20 @@ export default {
     invertedPath() {
       return d3
         .line()
-         .x(d => {
-                return this.getScaleX(d.position);
+         .x((d,i) => {
+                if (i === 0) {
+                    this.x1Line1 = this.getScaleX(d.position);
+                    this.x2Line1 = this.getScaleX(d.position);
+                }
+              return this.getScaleX(d.position);
             })
-        .y(d => {
-            
-            return this.getInvertedScaleY(d.varIndex * -1);
-        });
+        .y((d,i) => {
+           if (i === 0) {
+                    this.y1Line1 = this.getScaleY(d.varIndex);
+                    this.y2Line1 = this.getScaleY(d.varIndex);
+                }
+              return this.getInvertedScaleY(d.varIndex * -1);
+           });
     },
     line() {
         return this.path(this.chromosome);
