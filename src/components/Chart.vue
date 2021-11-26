@@ -7,8 +7,12 @@
             <g v-for=" (d, index) in getTargetPositive" :key="index"> 
                 <defs>
                   <linearGradient id="gradchartpos" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" :stop-color="d.colorStart" />
-                    <stop offset="100%" :stop-color="d.colorStop" />
+                    <stop
+                        v-for="(color, i) in d.colorRangeRgb"
+                        :key="i"
+                        :offset="`${++i * (100 / d.colorRangeRgb.length)}%`"
+                        :stop-color="color"
+                    ></stop>
                   </linearGradient>
                 </defs>
                 <rect :x="d.targetStart" y="0" height="10" :width="d.targetWidth+10" fill="url(#gradchartpos)"></rect>
@@ -42,8 +46,12 @@
             <g v-for=" (d, index) in getTargetNegative" :key="index"> 
                 <defs>
                   <linearGradient id="gradchartneg" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" :stop-color="d.colorStart" />
-                    <stop offset="100%" :stop-color="d.colorStop" />
+                    <stop
+                        v-for="(color, i) in d.colorRangeRgb"
+                        :key="i"
+                        :offset="`${++i * (100 / d.colorRangeRgb.length)}%`"
+                        :stop-color="color"
+                    ></stop>
                   </linearGradient>
                 </defs>
               <rect :x="d.targetStart" y="0" height="10" :width="d.targetWidth+10" fill="url(#gradchartneg)"></rect>
@@ -74,8 +82,7 @@ export default {
 
     };
   },
-  created() {},
-   
+  created() {}, 
   methods: {},
   computed: { 
     getScaleX() {
@@ -95,7 +102,7 @@ export default {
           if(typeof this.target != 'undefined' && this.target.length > 0) {
               this.target.map(el => {
                   if((this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart)) > 0) {
-                      newTarget.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: this.getScaleX(el.targetStart), targetStop: this.getScaleX(el.targetStop), targetWidth: (this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart)), colorStart: el.colorStart, colorStop: el.colorStop} ))
+                      newTarget.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: this.getScaleX(el.targetStart), targetStop: this.getScaleX(el.targetStop), targetWidth: (this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart)), colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.colorRangeRgb} ))
                   }
                       
               })
@@ -107,7 +114,7 @@ export default {
           if(typeof this.target != 'undefined' && this.target.length > 0) {
               this.target.map(el => {
                 if((this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart)) < 0) {
-                    newTarget.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: this.getScaleX(el.targetStart), targetStop: this.getScaleX(el.targetStop), targetWidth: (this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart))*-1, colorStart: el.colorStart, colorStop: el.colorStop} ))
+                    newTarget.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: this.getScaleX(el.targetStart), targetStop: this.getScaleX(el.targetStop), targetWidth: (this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart))*-1, colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.colorRangeRgb} ))
                 }
               })
           }

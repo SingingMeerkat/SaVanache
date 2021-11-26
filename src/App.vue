@@ -8,17 +8,18 @@
     </div>
     <hr>
     <div>
-        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" />
+        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" :getColorScale="getColorScale" />
     </div>
   </div>
 </template>
 
 <script>
+import * as d3 from "d3";
 import Chart from "./components/Chart.vue";
 import Chromosome from './components/Chromosome.vue';
 import chromosomes from "./chromosomes.json"
 import sources from "./sources.json"
-import { getColor } from "./helpers/helpers.js"
+import { getColor, matchingValue } from "./helpers/helpers.js"
 
 export default {
   name: "App",
@@ -52,7 +53,7 @@ export default {
       source:[],
       chromosome: {},
       sourceByColor: [],
-      fullSourceTargetColor: [],
+      fullSourceTargetColor: []
     }
   },
    mounted() {
@@ -62,6 +63,7 @@ export default {
   },
   methods: {
     getColor,
+    matchingValue,
     getElementsBySources () {
         let duplicateSources = []
         this.sources.map(element => {
@@ -71,18 +73,25 @@ export default {
         this.source = duplicateSources
     },
     getDataColorSource() {
-      return this.getColor(this.source, this.chromosome, this.colorRange)
+      return this.getColor(this.source, this.chromosome, this.getColorScale)
     },
     getTargetBySource() {
+        let getColorSc = this.getColorScale
         let arrayDataColorSource = this.getDataColorSource()
         const result = this.source.filter((item) => arrayDataColorSource.some(element => item.sourceName === element.sourceName))
-        return result.map((item, i) => Object.assign({}, {svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: arrayDataColorSource[i].colorStart, colorStop: arrayDataColorSource[i].colorStop} ));
+        let indexColorStartInScale = []
+        let indexColorStopInScale = []
+        
+        indexColorStartInScale.push(arrayDataColorSource.map(e => getColorSc.indexOf(e.colorStart)))
+        indexColorStopInScale.push(arrayDataColorSource.map(e => getColorSc.indexOf(e.colorStop)))
+
+        return result.map((item, i) => Object.assign({}, {svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: arrayDataColorSource[i].colorStart, colorStop: arrayDataColorSource[i].colorStop, colorRangeRgb: getColorSc.slice(indexColorStartInScale[0][i], indexColorStopInScale[0][i]+1)} ));
     },
     getTargetByChrom (index) {
       let result = []
        this.fullSourceTargetColor.filter(el => {
           if(el.targetName === index) {
-              result.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop} ))
+              result.push(Object.assign({}, {svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.colorRangeRgb} ))
           } 
        })
        return result
@@ -96,6 +105,19 @@ export default {
         this.fullSourceTargetColor = this.getTargetBySource()
     }
   },
+  computed: {
+    getColorScale(){
+        let domainArr = []
+        this.colorRange.map((_,i) => {
+            let divided = d3.max(this.chromosome, (d => d.position))/(this.colorRange.length-1)
+            domainArr.push(divided*i++)
+        })
+        let colorScale = d3.scaleLinear()
+                      .domain(domainArr)
+                      .range(this.colorRange)
+        return this.chromosome.map(d => colorScale(d.position))             
+    },
+  }
  
 };
 </script>

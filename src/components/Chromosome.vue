@@ -12,7 +12,8 @@
           ></stop>
         </linearGradient>
       </defs>
-      <g :transform="transform" class="group" @click="dragLines">
+
+      <g :transform="transform" @click="dragLines">
         <line
           class="eventLine"
           :x1="x1Line1"
@@ -29,9 +30,6 @@
           :y2="y2Line1"
           style="stroke: rgb(0, 0, 0); stroke-width: 20"
         />
-      </g>
-
-      <g :transform="transform">
         
         <path
           fill="url(#lingrad)"
@@ -49,7 +47,7 @@ import { getLength, getMaxX, getMaxY, getReverseArr, normalize, closestPosition,
 
 export default {
   name: "Chromosome",
-  props: ["chromosome", "name", "sources", "colorRange", "source"],
+  props: ["chromosome", "name", "sources", "colorRange", "source", "getColorScale"],
   data() {
     return {
       marginTop: 20,
@@ -75,7 +73,8 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+},
   methods: {
     getLength,
     getMaxX,
@@ -86,13 +85,13 @@ export default {
     matchingValue,
     getColor,
     dragstarted() {
-      d3.select(".eventLine").raise().attr("active", true);
+        d3.select(".eventLine").raise().attr("active", true);
     },
     dragged(event) {
         this.deltaX1 = event.x;
         this.deltaY1 = event.y;
         this.deltaX2 = event.x;
-        this.deltaY2 = event.y+this.y2Line1;
+        this.deltaY2 = event.y+this.y2Line2;
 
         let current = d3.select(".eventLine");
 
@@ -103,30 +102,18 @@ export default {
   
     },
     dragended() {
-      d3.select(".eventLine").attr("active", false);
+        d3.select(".eventLine").attr("active", false);
     },
     dragLines() {
-      var drag = d3
-        .drag()
-        .on("start", this.dragstarted)
-        .on("drag", this.dragged)
-        .on("end", this.dragended);
-      d3.select(".eventLine").call(drag);
+        var drag = d3
+          .drag()
+          .on("start", this.dragstarted)
+          .on("drag", this.dragged)
+          .on("end", this.dragended);
+        d3.select(".eventLine").call(drag);
     },
   },
   computed: {
-    getColorScale(){
-        let domainArr = []
-        this.colorRange.map((_,i) => {
-            let divided = d3.max(this.chromosome, (d => d.position))/(this.colorRange.length-1)
-            domainArr.push(divided*i++)
-        })
-        let colorScale = d3.scaleLinear()
-                      .domain(domainArr)
-                      .range(this.colorRange)
-        return this.chromosome.map(d => colorScale(d.position))             
-    },
-    
     getScaleX() {
           let x = d3.scaleLinear()
                   .domain([0, d3.max(this.chromosome, (d => d.position))])
@@ -146,7 +133,6 @@ export default {
           return y
     },
     path() {
-        
         const maxY = this.getMaxY(this.chromosome)
         return d3
             .line()
@@ -204,7 +190,6 @@ export default {
     invertedLine() {
         return this.invertedPath(this.chromosome);
     },
-
     viewBox() {
         return `0 0 ${this.width} ${this.height}`;
     },

@@ -33,7 +33,7 @@ export function matchingValue(array1, val){
     })
 }
 
-export function getColor(arrSource, arrChromosome, colorRange) {
+export function getColor(arrSource, arrChromosome, colorFromChr) {
     const maxX = getMaxX(arrChromosome) 
     let sourceStart = []
     let sourceStop = []
@@ -58,9 +58,9 @@ export function getColor(arrSource, arrChromosome, colorRange) {
     sourceStop.map(element => normValueStop.push(element/maxX))
     let mergeSourceStartAndStop = normValueStart.map((item, i) => Object.assign({}, { sourceStart : item, sourceStop : normValueStop[i]} ));
 
-    colorRange.map((_, i) => arrColorById.push(i+1))
-    let arrColorNormalized = arrColorById.map(normalize(1, colorRange.length))
-    let mergeColorNorm = this.colorRange.map((item, i) => Object.assign({}, {color: item, norm: arrColorNormalized[i]} ));
+    colorFromChr.map((_, i) => arrColorById.push(i+1))
+    let arrColorNormalized = arrColorById.map(normalize(1, colorFromChr.length))
+    let mergeColorNorm = colorFromChr.map((item, i) => Object.assign({}, {color: item, norm: arrColorNormalized[i]} ));
 
     mergeSourceStartAndStop.map(element => {
         getClosestStart.push(closestPosition(arrColorNormalized, element.sourceStart))
