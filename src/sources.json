@@ -1,232 +1,232 @@
 [
-    {
-      "svID": "n_chr19_chr17",
-      "sourceName": "chr19",
-      "sourceStart": 24186054,
-      "sourceStop": 24286054,
-      "strand": "+",
-      "targetName": "chr17",
-      "targetStart": 33478117,
-      "targetStop": 33578117
-    },
-    {
-      "svID": "n_chr4_chr1",
-      "sourceName": "chr4",
-      "sourceStart": 76807187,
-      "sourceStop": 76807287,
-      "strand": "-",
-      "targetName": "chr1",
-      "targetStart": 91852878,
-      "targetStop": 91852778
-    },
-    {
-      "svID": "n_chr12_chr12",
-      "sourceName": "chr12",
-      "sourceStart": 34372614,
-      "sourceStop": 34372714,
-      "strand": "-",
-      "targetName": "chr12",
-      "targetStart": 127650987,
-      "targetStop": 127650887
-    },
-    {
-      "svID": "n_chr12_chr2",
-      "sourceName": "chr12",
-      "sourceStart": 34372616,
-      "sourceStop": 34472616,
-      "strand": "+",
-      "targetName": "chr2",
-      "targetStart": 159440784,
-      "targetStop": 159540784
-    },
-    {
-      "svID": "n_chr2_chr5",
-      "sourceName": "chr2",
-      "sourceStart": 133012108,
-      "sourceStop": 133022108,
-      "strand": "+",
-      "targetName": "chr5",
-      "targetStart": 174541752,
-      "targetStop": 174551752
-    },
-    {
-      "svID": "n_chr22_chr17",
-      "sourceName": "chr22",
-      "sourceStart": 21265412,
-      "sourceStop": 31265412,
-      "strand": "+",
-      "targetName": "chr17",
-      "targetStart": 33478113,
-      "targetStop": 43478113
-    },
-    {
-      "svID": "n_chr1_chr2",
-      "sourceName": "chr1",
-      "sourceStart": 91852783,
-      "sourceStop": 91952783,
-      "strand": "-",
-      "targetName": "chr2",
-      "targetStart": 133036705,
-      "targetStop": 132936705
-    },
-    {
-      "svID": "n_chr21_chr17",
-      "sourceName": "chr21",
-      "sourceStart": 9827203,
-      "sourceStop": 9927203,
-      "strand": "+",
-      "targetName": "chr17",
-      "targetStart": 33478116,
-      "targetStop": 33578116
-    },
-    {
-      "svID": "n_chr21_chr17",
-      "sourceName": "chr21",
-      "sourceStart": 9826936,
-      "sourceStop": 19826936,
-      "strand": "-",
-      "targetName": "chr17",
-      "targetStart": 33478113,
-      "targetStop": 23478113
-    },
-    {
-      "svID": "n_chr21_chr17",
-      "sourceName": "chr21",
-      "sourceStart": 9827510,
-      "sourceStop": 9827610,
-      "strand": "+",
-      "targetName": "chr17",
-      "targetStart": 33478111,
-      "targetStop": 33478211
-    },
-    {
-      "svID": "n_chr1_chr17",
-      "sourceName": "chr1",
-      "sourceStart": 568507,
-      "sourceStop": 578507,
-      "strand": "+",
-      "targetName": "chr17",
-      "targetStart": 33478117,
-      "targetStop": 33488117
-    },
-    {
-      "svID": "n_chr17_chr17",
-      "sourceName": "chr17",
-      "sourceStart": 37360418,
-      "sourceStop": 37361418,
-      "strand": "-",
-      "targetName": "chr17",
-      "targetStart": 33478115,
-      "targetStop": 33477115
-    },
-    {
-      "svID": "n_chr17_chrX",
-      "sourceName": "chr17",
-      "sourceStart": 33478116,
-      "sourceStop": 34478116,
-      "strand": "-",
-      "targetName": "chrX",
-      "targetStart": 108297810,
-      "targetStop": 107297810
-    },
-    {
-      "svID": "n_chr17_chr8",
-      "sourceName": "chr17",
-      "sourceStart": 33478131,
-      "sourceStop": 33478231,
-      "strand": "+",
-      "targetName": "chr8",
-      "targetStart": 136786084,
-      "targetStop": 136786184
-    },
-    {
-      "svID": "n_chr17_chr2",
-      "sourceName": "chr17",
-      "sourceStart": 33478111,
-      "sourceStop": 33479111,
-      "strand": "-",
-      "targetName": "chr2",
-      "targetStart": 88124673,
-      "targetStop": 88123673
-    },
-    {
-      "svID": "n_chr17_chr1",
-      "sourceName": "chr17",
-      "sourceStart": 33478116,
-      "sourceStop": 33488116,
-      "strand": "+",
-      "targetName": "chr1",
-      "targetStart": 237766312,
-      "targetStop": 237776312
-    },
-    {
-      "svID": "n_chr17_chr1",
-      "sourceName": "chr17",
-      "sourceStart": 33478116,
-      "sourceStop": 33478216,
-      "strand": "+",
-      "targetName": "chr1",
-      "targetStart": 91853039,
-      "targetStop": 91853139
-    },
-    {
-      "svID": "n_chr17_chr2",
-      "sourceName": "chr17",
-      "sourceStart": 33478117,
-      "sourceStop": 33488117,
-      "strand": "-",
-      "targetName": "chr2",
-      "targetStart": 133012644,
-      "targetStop": 133002644
-    },
-    {
-      "svID": "n_chr17_chr11",
-      "sourceName": "chr17",
-      "sourceStart": 33478115,
-      "sourceStop": 33578115,
-      "strand": "+",
-      "targetName": "chr11",
-      "targetStart": 85194786,
-      "targetStop": 85294786
-    },
-    {
-      "svID": "n_chr17_chr11",
-      "sourceName": "chr17",
-      "sourceStart": 33478115,
-      "sourceStop": 43478115,
-      "strand": "-",
-      "targetName": "chr11",
-      "targetStart": 85194786,
-      "targetStop": 75194786
-    },
-    {
-      "svID": "n_chr17_chr21",
-      "sourceName": "chr17",
-      "sourceStart": 33478117,
-      "sourceStop": 33479117,
-      "strand": "+",
-      "targetName": "chr21",
-      "targetStart": 35677489,
-      "targetStop": 35678489
-    },
-    {
-      "svID": "n_chr17_chr1",
-      "sourceName": "chr17",
-      "sourceStart": 33478117,
-      "sourceStop": 43478117,
-      "strand": "+",
-      "targetName": "chr1",
-      "targetStart": 91852849,
-      "targetStop": 101852849
-    },
-    {
-      "svID": "n_chr17_chrX",
-      "sourceName": "chr17",
-      "sourceStart": 33478114,
-      "sourceStop": 33488114,
-      "strand": "+",
-      "targetName": "chrX",
-      "targetStart": 108297713,
-      "targetStop": 108307713
-    }
-]
+  {
+    "svID": "1_chr19_chr17",
+    "sourceName": "chr19",
+    "sourceStart": 24186054,
+    "sourceStop": 24286054,
+    "strand": "+",
+    "targetName": "chr17",
+    "targetStart": 33478117,
+    "targetStop": 33578117
+  },
+  {
+    "svID": "2_chr4_chr1",
+    "sourceName": "chr4",
+    "sourceStart": 76807187,
+    "sourceStop": 76807287,
+    "strand": "-",
+    "targetName": "chr1",
+    "targetStart": 91852778,
+    "targetStop": 91852878
+  },
+  {
+    "svID": "3_chr12_chr12",
+    "sourceName": "chr12",
+    "sourceStart": 34372614,
+    "sourceStop": 34372714,
+    "strand": "-",
+    "targetName": "chr12",
+    "targetStart": 127650887,
+    "targetStop": 127650987
+  },
+  {
+    "svID": "4_chr12_chr2",
+    "sourceName": "chr12",
+    "sourceStart": 34372616,
+    "sourceStop": 34472616,
+    "strand": "+",
+    "targetName": "chr2",
+    "targetStart": 159440784,
+    "targetStop": 159540784
+  },
+  {
+    "svID": "5_chr2_chr5",
+    "sourceName": "chr2",
+    "sourceStart": 133012108,
+    "sourceStop": 133022108,
+    "strand": "+",
+    "targetName": "chr5",
+    "targetStart": 174541752,
+    "targetStop": 174551752
+  },
+  {
+    "svID": "6_chr22_chr17",
+    "sourceName": "chr22",
+    "sourceStart": 21265412,
+    "sourceStop": 31265412,
+    "strand": "+",
+    "targetName": "chr17",
+    "targetStart": 33478113,
+    "targetStop": 43478113
+  },
+  {
+    "svID": "7_chr1_chr2",
+    "sourceName": "chr1",
+    "sourceStart": 91852783,
+    "sourceStop": 91952783,
+    "strand": "-",
+    "targetName": "chr2",
+    "targetStart": 132936705,
+    "targetStop": 133036705
+  },
+  {
+    "svID": "8_chr21_chr17",
+    "sourceName": "chr21",
+    "sourceStart": 9827203,
+    "sourceStop": 9927203,
+    "strand": "+",
+    "targetName": "chr17",
+    "targetStart": 33478116,
+    "targetStop": 33578116
+  },
+  {
+    "svID": "9_chr21_chr17",
+    "sourceName": "chr21",
+    "sourceStart": 9826936,
+    "sourceStop": 19826936,
+    "strand": "-",
+    "targetName": "chr17",
+    "targetStart": 23478113,
+    "targetStop": 33478113
+  },
+  {
+    "svID": "10_chr21_chr17",
+    "sourceName": "chr21",
+    "sourceStart": 9827510,
+    "sourceStop": 9827610,
+    "strand": "+",
+    "targetName": "chr17",
+    "targetStart": 33478111,
+    "targetStop": 33478211
+  },
+  {
+    "svID": "11_chr1_chr17",
+    "sourceName": "chr1",
+    "sourceStart": 568507,
+    "sourceStop": 578507,
+    "strand": "+",
+    "targetName": "chr17",
+    "targetStart": 33478117,
+    "targetStop": 33488117
+  },
+  {
+    "svID": "12_chr17_chr17",
+    "sourceName": "chr17",
+    "sourceStart": 37360418,
+    "sourceStop": 37361418,
+    "strand": "-",
+    "targetName": "chr17",
+    "targetStart": 33477115,
+    "targetStop": 33478115
+  },
+  {
+    "svID": "13_chr17_chrX",
+    "sourceName": "chr17",
+    "sourceStart": 33478116,
+    "sourceStop": 34478116,
+    "strand": "-",
+    "targetName": "chrX",
+    "targetStart": 107297810,
+    "targetStop": 108297810
+  },
+  {
+    "svID": "14_chr17_chr8",
+    "sourceName": "chr17",
+    "sourceStart": 33478131,
+    "sourceStop": 33478231,
+    "strand": "+",
+    "targetName": "chr8",
+    "targetStart": 136786084,
+    "targetStop": 136786184
+  },
+  {
+    "svID": "15_chr17_chr2",
+    "sourceName": "chr17",
+    "sourceStart": 33478111,
+    "sourceStop": 33479111,
+    "strand": "-",
+    "targetName": "chr2",
+    "targetStart": 88123673,
+    "targetStop": 88124673
+  },
+  {
+    "svID": "16_chr17_chr1",
+    "sourceName": "chr17",
+    "sourceStart": 33478116,
+    "sourceStop": 33488116,
+    "strand": "+",
+    "targetName": "chr1",
+    "targetStart": 237766312,
+    "targetStop": 237776312
+  },
+  {
+    "svID": "17_chr17_chr1",
+    "sourceName": "chr17",
+    "sourceStart": 33478116,
+    "sourceStop": 33478216,
+    "strand": "+",
+    "targetName": "chr1",
+    "targetStart": 91853039,
+    "targetStop": 91853139
+  },
+  {
+    "svID": "18_chr17_chr2",
+    "sourceName": "chr17",
+    "sourceStart": 33478117,
+    "sourceStop": 33488117,
+    "strand": "-",
+    "targetName": "chr2",
+    "targetStart": 133002644,
+    "targetStop": 133012644
+  },
+  {
+    "svID": "19_chr17_chr11",
+    "sourceName": "chr17",
+    "sourceStart": 33478115,
+    "sourceStop": 33578115,
+    "strand": "+",
+    "targetName": "chr11",
+    "targetStart": 85194786,
+    "targetStop": 85294786
+  },
+  {
+    "svID": "20_chr17_chr11",
+    "sourceName": "chr17",
+    "sourceStart": 33478115,
+    "sourceStop": 43478115,
+    "strand": "-",
+    "targetName": "chr11",
+    "targetStart": 75194786,
+    "targetStop": 85194786
+  },
+  {
+    "svID": "21_chr17_chr21",
+    "sourceName": "chr17",
+    "sourceStart": 33478117,
+    "sourceStop": 33479117,
+    "strand": "+",
+    "targetName": "chr21",
+    "targetStart": 35677489,
+    "targetStop": 35678489
+  },
+  {
+    "svID": "22_chr17_chr1",
+    "sourceName": "chr17",
+    "sourceStart": 33478117,
+    "sourceStop": 43478117,
+    "strand": "+",
+    "targetName": "chr1",
+    "targetStart": 91852849,
+    "targetStop": 101852849
+  },
+  {
+    "svID": "23_chr17_chrX",
+    "sourceName": "chr17",
+    "sourceStart": 33478114,
+    "sourceStop": 33488114,
+    "strand": "+",
+    "targetName": "chrX",
+    "targetStart": 108297713,
+    "targetStop": 108307713
+  }
+ ]
