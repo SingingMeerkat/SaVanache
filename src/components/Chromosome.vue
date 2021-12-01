@@ -3,40 +3,29 @@
     <h2>{{ name }}</h2>
     <svg :width="width" :height="height" :viewBox="viewBox">
       <defs>
-        <linearGradient id="lingrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop
-            v-for="(color, i) in getColorScale"
-            :key="i"
-            :offset="`${++i * (100 / getColorScale.length)}%`"
-            :stop-color="color"
-          ></stop>
+        <linearGradient id="lingrad" x1="0" y1="0" x2="1" y2="0">
+          <stop v-for="stop in stops" :key="stop.key" :offset="stop.offset" :stop-color="stop.color"></stop>
         </linearGradient>
       </defs>
 
-      <g :transform="transform" @click="dragLines">
-        <line
-          class="eventLine"
-          :x1="x1Line1"
-          :y1="y1Line1"
-          :x2="x2Line1"
-          :y2="y2Line2"
-          style="stroke: rgb(0, 0, 0); stroke-width: 20"
-        />
-        <line
-        class="eventLine2"
-          :x1="x1Line2"
-          :y1="y2Line2"
-          :x2="x2Line2"
-          :y2="y2Line1"
-          style="stroke: rgb(0, 0, 0); stroke-width: 20"
-        />
-        
+      <g :transform="transform">
+      
         <path
           fill="url(#lingrad)"
           :d="`${line} ${x2Line2} ${y2Line2} ${x1Line2} ${y1Line2} ${invertedLine} ${x2Line1} ${y2Line1} ${x1Line1} ${y1Line1}`"
         ></path>
         <path stroke="black" fill="none" :d="`${line} ${invertedLine}`"></path>
       </g>
+       <rect
+        x=0
+        y=0
+        :width="width"
+        :height="height"
+        fill='transparent'
+        cursor="crosshair"
+        class='track-overlay'
+        ref='ref_track-overlay'
+      />
     </svg>
   </div>
 </template>
@@ -57,24 +46,19 @@ export default {
       height: 480,
       width: 1200,
       transform: "translate(30,15)",
-      x1Line1: null,
-      y1Line1: null,
-      x2Line1: null,
-      y2Line1: null,
-      x1Line2: null,
-      y1Line2: null,
-      x2Line2: null,
-      y2Line2: null,
       domainY: null,
-      deltaX1: null,
-      deltaY1: null,
-      deltaX2: null,
-      deltaY2: null
+      x1: 10,
+      x2: 1190,
     };
   },
   created() {},
   mounted() {
-},
+    d3.select(this.$refs['ref_track-overlay'])
+      .call(
+        d3.drag()
+          .on("start drag", (event) => this.updateThreshold(event.x) ) // eslint-disable-line
+      );
+  },
   methods: {
     getLength,
     getMaxX,
@@ -84,36 +68,83 @@ export default {
     closestPosition,
     matchingValue,
     getColor,
-    dragstarted() {
-        d3.select(".eventLine").raise().attr("active", true);
+    updateThreshold(mousePos) {
+      if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
+        this.x2 = mousePos;
+      } else { this.x1 = mousePos}
     },
-    dragged(event) {
-        this.deltaX1 = event.x;
-        this.deltaY1 = event.y;
-        this.deltaX2 = event.x;
-        this.deltaY2 = event.y+this.y2Line2;
-
-        let current = d3.select(".eventLine");
-
-        current.attr("x1", this.deltaX1)
-                .attr("y1", this.deltaY1)
-                .attr("x2", this.deltaX2)
-                .attr("y2", this.deltaY2);
   
-    },
-    dragended() {
-        d3.select(".eventLine").attr("active", false);
-    },
-    dragLines() {
-        var drag = d3
-          .drag()
-          .on("start", this.dragstarted)
-          .on("drag", this.dragged)
-          .on("end", this.dragended);
-        d3.select(".eventLine").call(drag);
-    },
   },
   computed: {
+    x1AsPption() { return this.x1 / this.width },
+    preX1() { return Math.max(this.x1AsPption - 0.01, 0)},
+    x2AsPption() { return this.x2 / this.width },
+    postX2() { return Math.min(this.x2AsPption + 0.01, this.width)},
+    
+    stops() { 
+      let stopArr = [
+        {
+          key:'farLeft',
+          offset:0,
+          color:'grey',
+        },
+        {
+          key:'Left',
+          offset: this.preX1,
+          color:'grey',
+        },
+        {
+          key:'firstBoundaryLeft',
+          offset: this.preX1,
+          color:'black',
+        },
+        {
+          key:'firstBoundaryRight',
+          offset: this.x1AsPption,
+          color:'black',
+        }
+
+      
+      ]
+      this.getColorScale.map((color, i) => {
+       let offset;
+        if(i === 0) {
+          offset = this.x1AsPption
+        } else if(i === this.getColorScale.length) {
+          offset = this.x2AsPption
+        } else {
+          offset = (++i * ((this.x2AsPption-this.x1AsPption)/this.getColorScale.length)+this.x1AsPption)
+        }
+        stopArr.push(Object.assign({}, {
+                          key: `rangeColor${i}`, 
+                          offset:offset,
+                          color:color}))
+      })
+      
+      stopArr.push({
+          key:'secondBoundaryLeft',
+          offset: this.x2AsPption,
+          color:'black',
+        },
+        {
+          key:'secondBoundaryRight',
+          offset: this.postX2,
+          color:'black',
+        },
+        {
+          key:'Right',
+          offset: this.postX2,
+          color:'grey',
+        },
+        {
+          key:'farRight',
+          offset:100,
+          color:'grey',
+        })
+
+      return stopArr
+        
+    },
     getScaleX() {
           let x = d3.scaleLinear()
                   .domain([0, d3.max(this.chromosome, (d => d.position))])

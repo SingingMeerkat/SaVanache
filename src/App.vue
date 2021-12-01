@@ -57,7 +57,7 @@ export default {
       newSources: []
     }
   },
-   mounted() {
+  mounted() {
         let givesId = []
         this.sources.map((el) => {
           return this.sources.push(Object.assign({}, {svID: el.svID, sourceName: el.targetName, sourceStart: el.targetStart, sourceStop: el.targetStop, strand: el.strand, targetName: el.sourceName, targetStart: el.sourceStart , targetStop: el.sourceStop }))
@@ -80,7 +80,7 @@ export default {
         this.source = duplicateSources
     },
     getDataColorSource() {
-      return this.getColor(this.source, this.chromosome, this.getColorScale)
+        return this.getColor(this.source, this.chromosome, this.getColorScale)
     },
     getTargetBySource() {
         let getColorSc = this.getColorScale
@@ -93,17 +93,16 @@ export default {
         indexColorStopInScale.push(arrayDataColorSource.map(e => getColorSc.indexOf(e.colorStop)))
         
         return result.map((item, i) =>Object.assign({}, {id: item.id, svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: arrayDataColorSource[i].colorStart, colorStop: arrayDataColorSource[i].colorStop, colorRangeRgb: item.strand === "-" ? this.getReverseArr(getColorSc.slice(indexColorStartInScale[0][i], indexColorStopInScale[0][i]+1)) : getColorSc.slice(indexColorStartInScale[0][i], indexColorStopInScale[0][i]+1) } )) 
-
     },
     getTargetByChrom (index) {
-      let result = []
-       this.fullSourceTargetColor.filter(el => {
-          if(el.targetName === index) {
-              result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.colorRangeRgb} ))
-          } 
-       })
-       console.log(result)
-       return result
+        let result = []
+        this.fullSourceTargetColor.filter(el => {
+            if(el.targetName === index) {
+                result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.colorRangeRgb} ))
+            } 
+        })
+        console.log(result)
+        return result
     },
     displayCurrentChrom(id, chrom) {
         this.name = id

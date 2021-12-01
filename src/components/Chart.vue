@@ -1,6 +1,6 @@
 <template>
   <div class="chart-vue">
-    <svg height="50" :width="width">
+    <svg height="60" :width="width">
       <g v-for="(d, index) in getTargetPositive" :key="index">
         <defs>
           <linearGradient
@@ -36,7 +36,7 @@
         <path fill="none" stroke="#9579a6" stroke-width="2" :d="line"></path>
       </g>
     </svg>
-    <svg height="50" :width="width">
+    <svg height="60" :width="width">
       <g v-for="(d, index) in getTargetNegative" :key="index">
         <defs>
           <linearGradient
