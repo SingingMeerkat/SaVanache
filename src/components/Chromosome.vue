@@ -8,7 +8,7 @@
         </linearGradient>
       </defs>
 
-      <g :transform="transform">
+      <g>
       
         <path
           fill="url(#lingrad)"
@@ -32,11 +32,11 @@
 
 <script>
 import * as d3 from "d3";
-import { getLength, getMaxX, getMaxY, getReverseArr, normalize, closestPosition, matchingValue, getColor} from "../helpers/helpers"
+import { getLength, getMaxX, getMaxY, getReverseArr, normalize, closestPosition, matchingValue} from "../helpers/helpers"
 
 export default {
   name: "Chromosome",
-  props: ["chromosome", "name", "sources", "colorRange", "source", "getColorScale"],
+  props: ["chromosome", "name", "sources", "colorRange", "source"],
   data() {
     return {
       marginTop: 20,
@@ -45,7 +45,6 @@ export default {
       marginLeft: 100,
       height: 480,
       width: 1200,
-      transform: "translate(30,15)",
       domainY: null,
       x1: 10,
       x2: 1190,
@@ -67,7 +66,6 @@ export default {
     normalize,
     closestPosition,
     matchingValue,
-    getColor,
     updateThreshold(mousePos) {
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
         this.x2 = mousePos;
@@ -106,14 +104,14 @@ export default {
 
       
       ]
-      this.getColorScale.map((color, i) => {
+      this.colorRange.map((color, i) => {
        let offset;
         if(i === 0) {
           offset = this.x1AsPption
-        } else if(i === this.getColorScale.length) {
+        } else if(i === this.colorRange.length) {
           offset = this.x2AsPption
         } else {
-          offset = (++i * ((this.x2AsPption-this.x1AsPption)/this.getColorScale.length)+this.x1AsPption)
+          offset = (++i * ((this.x2AsPption-this.x1AsPption)/this.colorRange.length)+this.x1AsPption)
         }
         stopArr.push(Object.assign({}, {
                           key: `rangeColor${i}`, 
@@ -219,7 +217,7 @@ export default {
         return this.path(this.chromosome);
     },
     invertedLine() {
-        return this.invertedPath(this.chromosome);
+        return this.invertedPath(this.getReverseArr(this.chromosome));
     },
     viewBox() {
         return `0 0 ${this.width} ${this.height}`;

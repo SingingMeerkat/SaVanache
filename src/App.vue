@@ -3,12 +3,12 @@
     <h1>SaVanache</h1>
     <div  class="chromosomes-grid">
       <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index, chromosome)" >
-            <Chart :chromosome="chromosome" :index="index" :colorRange="colorRange" :source="source" :sourceByColor="sourceByColor" :target="getTargetByChrom(index)"/>
+            <Chart :chromosome="chromosome" :index="index" :colorRange="colorRange" :source="source" :target="getTargetByChrom(index)"/>
       </div>
     </div>
     <hr>
     <div>
-        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" :getColorScale="getColorScale" />
+        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" />
     </div>
   </div>
 </template>
@@ -19,7 +19,7 @@ import Chart from "./components/Chart.vue";
 import Chromosome from './components/Chromosome.vue';
 import chromosomes from "./chromosomes.json"
 import sources from "./sources.json"
-import { getColor, matchingValue, getReverseArr } from "./helpers/helpers.js"
+import { matchingValue, getReverseArr} from "./helpers/helpers.js"
 
 export default {
   name: "App",
@@ -52,8 +52,6 @@ export default {
       ],
       source:[],
       chromosome: {},
-      sourceByColor: [],
-      fullSourceTargetColor: [],
       newSources: []
     }
   },
@@ -65,40 +63,23 @@ export default {
         this.sources.map((_, i) => givesId.push(i+1))
         const newSources = this.sources.map((el, i) => Object.assign({}, {id: givesId[i], svID: givesId[i]+"_"+el.sourceName+"_"+el.targetName, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop} ));
         this.newSources =  newSources
-        console.log(this.newSources)
   },
   methods: {
-    getColor,
     matchingValue,
     getReverseArr,
     getElementsBySources () {
-        let duplicateSources = [] 
-        this.newSources.map(element => {
-          return this.name === element.sourceName ? duplicateSources.push(element) : ""
+        let elementsBySources = [] 
+        this.newSources.map(item => {
+          return this.name === item.sourceName ? elementsBySources.push( Object.assign({}, {id: item.id, svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: this.getColorScale(item.sourceStart), colorStop: this.getColorScale(item.sourceStop)})) : elementsBySources.push( Object.assign({}, {}))
         })
-        if (duplicateSources.length === 0) return null;
-        this.source = duplicateSources
-    },
-    getDataColorSource() {
-        return this.getColor(this.source, this.chromosome, this.getColorScale)
-    },
-    getTargetBySource() {
-        let getColorSc = this.getColorScale
-        let arrayDataColorSource = this.getDataColorSource()
-        const result = this.source.filter((item) => arrayDataColorSource.some(element => item.sourceName === element.sourceName))
-        let indexColorStartInScale = []
-        let indexColorStopInScale = []
-        
-        indexColorStartInScale.push(arrayDataColorSource.map(e => getColorSc.indexOf(e.colorStart)))
-        indexColorStopInScale.push(arrayDataColorSource.map(e => getColorSc.indexOf(e.colorStop)))
-        
-        return result.map((item, i) =>Object.assign({}, {id: item.id, svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: arrayDataColorSource[i].colorStart, colorStop: arrayDataColorSource[i].colorStop, colorRangeRgb: item.strand === "-" ? this.getReverseArr(getColorSc.slice(indexColorStartInScale[0][i], indexColorStopInScale[0][i]+1)) : getColorSc.slice(indexColorStartInScale[0][i], indexColorStopInScale[0][i]+1) } )) 
+        if (elementsBySources.length === 0) return null;
+        return elementsBySources  
     },
     getTargetByChrom (index) {
         let result = []
-        this.fullSourceTargetColor.filter(el => {
+        this.source.map(el => {
             if(el.targetName === index) {
-                result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.colorRangeRgb} ))
+                result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.strand === "+" ? [el.colorStart, el.colorStop] : [el.colorStop, el.colorStart]} ))
             } 
         })
         console.log(result)
@@ -108,10 +89,7 @@ export default {
         this.name = id
         this.chromosome = chrom
         this.display = true
-        this.getElementsBySources()
-        this.sourceByColor = this.getDataColorSource()
-        this.fullSourceTargetColor = this.getTargetBySource()
-        
+        this.source = this.getElementsBySources()
     }
   },
   computed: {
@@ -124,8 +102,8 @@ export default {
         let colorScale = d3.scaleLinear()
                       .domain(domainArr)
                       .range(this.colorRange)
-        return this.chromosome.map(d => colorScale(d.position))             
-    },
+        return colorScale
+    }
   }
  
 };

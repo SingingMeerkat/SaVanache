@@ -81,15 +81,12 @@ export default {
   ],
   data() {
     return {
-      displayCircle: false,
       marginTop: 20,
       marginRight: 0,
       marginBottom: 20,
       marginLeft: 30,
       height: 180,
       width: 400,
-      colorStart: "",
-      colorStop: "",
     };
   },
   mounted() {},
