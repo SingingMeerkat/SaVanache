@@ -8,7 +8,7 @@
     </div>
     <hr>
     <div>
-        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" />
+        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" :height="height" :width="width" />
     </div>
   </div>
 </template>
@@ -17,9 +17,6 @@
 import * as d3 from "d3";
 import Chart from "./components/Chart.vue";
 import Chromosome from './components/Chromosome.vue';
-import chromosomes from "./chromosomes.json"
-import sources from "./sources.json"
-import { matchingValue, getReverseArr} from "./helpers/helpers.js"
 
 export default {
   name: "App",
@@ -29,8 +26,6 @@ export default {
   },
   data() {
     return {
-      chromosomes,
-      sources,
       display: false,   
       name:"",
       colorRange: [
@@ -51,8 +46,8 @@ export default {
         "#FCDF91",
       ],
       source:[],
-      chromosome: {},
-      newSources: []
+      newSources: [],
+      chromosome: {}
     }
   },
   mounted() {
@@ -65,8 +60,6 @@ export default {
         this.newSources =  newSources
   },
   methods: {
-    matchingValue,
-    getReverseArr,
     getElementsBySources () {
         let elementsBySources = [] 
         this.newSources.map(item => {
@@ -82,7 +75,6 @@ export default {
                 result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.strand === "+" ? [el.colorStart, el.colorStop] : [el.colorStop, el.colorStart]} ))
             } 
         })
-        console.log(result)
         return result
     },
     displayCurrentChrom(id, chrom) {
@@ -93,17 +85,31 @@ export default {
     }
   },
   computed: {
-    getColorScale(){
-        let domainArr = []
+    getColorScale() {
+       let domainArr = []
         this.colorRange.map((_,i) => {
             let divided = d3.max(this.chromosome, (d => d.position))/(this.colorRange.length-1)
             domainArr.push(divided*i++)
         })
-        let colorScale = d3.scaleLinear()
-                      .domain(domainArr)
-                      .range(this.colorRange)
+       let colorScale = d3.scaleLinear()
+                .domain(domainArr)
+                .range(this.colorRange)
         return colorScale
-    }
+    },
+    chromosomes () {
+      return this.$store.state.chromosomes
+    },
+    sources () {
+      return this.$store.state.sources
+    },
+    width () {
+      return this.$store.state.width
+    },
+    height () {
+      return this.$store.state.height
+    },
+   
+
   }
  
 };

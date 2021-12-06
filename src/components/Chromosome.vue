@@ -9,7 +9,6 @@
       </defs>
 
       <g>
-      
         <path
           fill="url(#lingrad)"
           :d="`${line} ${x2Line2} ${y2Line2} ${x1Line2} ${y1Line2} ${invertedLine} ${x2Line1} ${y2Line1} ${x1Line1} ${y1Line1}`"
@@ -31,117 +30,136 @@
 </template>
 
 <script>
+import {mapActions, mapGetters, mapState} from "vuex";
 import * as d3 from "d3";
-import { getLength, getMaxX, getMaxY, getReverseArr, normalize, closestPosition, matchingValue} from "../helpers/helpers"
+import { getLength, getMaxY, getReverseArr} from "../helpers/helpers"
 
 export default {
   name: "Chromosome",
-  props: ["chromosome", "name", "sources", "colorRange", "source"],
+  props: ["chromosome", "name", "sources", "colorRange", "source", "height", "width"],
   data() {
     return {
       marginTop: 20,
       marginRight: 0,
       marginBottom: 360,
       marginLeft: 100,
-      height: 480,
-      width: 1200,
       domainY: null,
-      x1: 10,
-      x2: 1190,
     };
   },
   created() {},
   mounted() {
     d3.select(this.$refs['ref_track-overlay'])
-      .call(
-        d3.drag()
-          .on("start drag", (event) => this.updateThreshold(event.x) ) // eslint-disable-line
-      );
+        .call(
+          d3.drag()
+            .on("start drag", (event) => this.updateThreshold(event.x) )
+    );
   },
   methods: {
+    ...mapActions({
+      updateX1: 'updateX1',
+      updateX2: 'updateX2'
+    }),
     getLength,
-    getMaxX,
     getMaxY,
     getReverseArr,
-    normalize,
-    closestPosition,
-    matchingValue,
     updateThreshold(mousePos) {
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
-        this.x2 = mousePos;
-      } else { this.x1 = mousePos}
+        this.x2 = mousePos
+      } else {
+        this.x1 = mousePos
+      }
     },
-  
   },
   computed: {
-    x1AsPption() { return this.x1 / this.width },
-    preX1() { return Math.max(this.x1AsPption - 0.01, 0)},
-    x2AsPption() { return this.x2 / this.width },
-    postX2() { return Math.min(this.x2AsPption + 0.01, this.width)},
-    
-    stops() { 
+    ...mapState({
+      x1: 'x1',
+      x2: 'x2',
+    }),
+    ...mapGetters({
+      x1AsPption: 'getX1AsPption',
+      preX1: 'getPreX1',
+      x2AsPption: 'getX2AsPption',
+      postX2: 'getPostX2'
+    }),
+    x1: {
+        get () { return this.$store.state.x1},
+        set (value) { this.updateX1(value) }
+    },
+    x2: {
+        get () { return this.$store.state.x2},
+        set (value) { this.updateX2(value) }
+    },
+    stops() {
       let stopArr = [
         {
-          key:'farLeft',
-          offset:0,
-          color:'grey',
+          key: "farLeft",
+          offset: 0,
+          color: "grey",
         },
         {
-          key:'Left',
+          key: "Left",
           offset: this.preX1,
-          color:'grey',
+          color: "grey",
         },
         {
-          key:'firstBoundaryLeft',
+          key: "firstBoundaryLeft",
           offset: this.preX1,
-          color:'black',
+          color: "black",
         },
         {
-          key:'firstBoundaryRight',
+          key: "firstBoundaryRight",
           offset: this.x1AsPption,
-          color:'black',
-        }
-
-      
-      ]
+          color: "black",
+        },
+      ];
       this.colorRange.map((color, i) => {
-       let offset;
-        if(i === 0) {
-          offset = this.x1AsPption
-        } else if(i === this.colorRange.length) {
-          offset = this.x2AsPption
+        let offset;
+        if (i === 0) {
+          offset = this.x1AsPption;
+        } else if (i === this.colorRange.length) {
+          offset = this.x2AsPption;
         } else {
-          offset = (++i * ((this.x2AsPption-this.x1AsPption)/this.colorRange.length)+this.x1AsPption)
+          offset =
+            ++i *
+              ((this.x2AsPption - this.x1AsPption) / this.colorRange.length) +
+            this.x1AsPption;
         }
-        stopArr.push(Object.assign({}, {
-                          key: `rangeColor${i}`, 
-                          offset:offset,
-                          color:color}))
-      })
-      
-      stopArr.push({
-          key:'secondBoundaryLeft',
-          offset: this.x2AsPption,
-          color:'black',
-        },
-        {
-          key:'secondBoundaryRight',
-          offset: this.postX2,
-          color:'black',
-        },
-        {
-          key:'Right',
-          offset: this.postX2,
-          color:'grey',
-        },
-        {
-          key:'farRight',
-          offset:100,
-          color:'grey',
-        })
+        stopArr.push(
+          Object.assign(
+            {},
+            {
+              key: `rangeColor${i}`,
+              offset: offset,
+              color: color,
+            }
+          )
+        );
+      });
 
-      return stopArr
-        
+      stopArr.push(
+        {
+          key: "secondBoundaryLeft",
+          offset: this.x2AsPption,
+          color: "black",
+        },
+        {
+          key: "secondBoundaryRight",
+          offset: this.postX2,
+          color: "black",
+        },
+        {
+          key: "Right",
+          offset: this.postX2,
+          color: "grey",
+        },
+        {
+          key: "farRight",
+          offset: 100,
+          color: "grey",
+        }
+      );
+
+      return stopArr;
     },
     getScaleX() {
           let x = d3.scaleLinear()
