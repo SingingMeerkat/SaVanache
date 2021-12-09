@@ -11,9 +11,9 @@
       <g>
         <path
           fill="url(#lingrad)"
-          :d="`${line} ${x2Line2} ${y2Line2} ${x1Line2} ${y1Line2} ${invertedLine} ${x2Line1} ${y2Line1} ${x1Line1} ${y1Line1}`"
+          :d="`${line}  L${invertedLine} Z`"
         ></path>
-        <path stroke="black" fill="none" :d="`${line} ${invertedLine}`"></path>
+        <path stroke="black" fill="none" :d="`${line} M${invertedLine}`"></path>
       </g>
        <rect
         x=0
@@ -32,7 +32,9 @@
 <script>
 import * as d3 from "d3";
 import {mapActions, mapState} from "vuex";
-import { getLength, getMaxY, getReverseArr} from "../helpers/helpers"
+import { getLength, getMaxY } from "../helpers/helpers"
+import {SVGPathUtils} from 'svg-path-utils';
+const utils = new SVGPathUtils();
 
 export default {
   name: "Chromosome",
@@ -48,14 +50,11 @@ export default {
   },
   created() {},
   mounted() {
-    
     d3.select(this.$refs['ref_track-overlay'])
         .call(
-            
             d3.drag()
               .on("drag", (event) => {this.updateThreshold(event.x)})
         );
-       
   },
   methods: {
      ...mapActions({
@@ -64,7 +63,6 @@ export default {
     }),
     getLength,
     getMaxY,
-    getReverseArr,
     updateThreshold(mousePos) {
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
           mousePos < this.width ? this.x2 = mousePos : mousePos = this.width 
@@ -181,21 +179,12 @@ export default {
         const maxY = this.getMaxY(this.chromosome)
         return d3
             .line()
-            .x((d, i) => {
+            .x(d => {
                 
-                if (i === this.getLength(this.chromosome) - 1) {
-                    this.x1Line2 = this.getScaleX(d.position);
-                    this.x2Line2 = this.getScaleX(d.position)
-    
-                }
                 return this.getScaleX(d.position);
             })
-            .y((d, i) => {
+            .y(d => {
                
-                if (i === this.getLength(this.chromosome) - 1) {
-                    this.y1Line2 = this.getScaleY((d.varIndex-this.domainY)*-1);
-                    this.y2Line2 = this.getScaleY((d.varIndex-this.domainY)*-1)
-                }
                 if (d.varIndex < 20 && maxY < 20) {
                     this.domainY = -3;
                 } else if (
@@ -214,18 +203,10 @@ export default {
     invertedPath() {
       return d3
         .line()
-         .x((d,i) => {
-                if (i === 0) {
-                    this.x1Line1 = this.getScaleX(d.position);
-                    this.x2Line1 = this.getScaleX(d.position);
-                }
+         .x(d => {
               return this.getScaleX(d.position);
             })
-        .y((d,i) => {
-           if (i === 0) {
-                    this.y1Line1 = this.getScaleY(d.varIndex);
-                    this.y2Line1 = this.getScaleY(d.varIndex);
-                }
+        .y(d => {
               return this.getInvertedScaleY(d.varIndex * -1);
            });
     },
@@ -233,7 +214,10 @@ export default {
         return this.path(this.chromosome);
     },
     invertedLine() {
-        return this.invertedPath(this.getReverseArr(this.chromosome));
+      const inverse_d = utils.inversePath(this.invertedPath(this.chromosome));
+      let temp=[...inverse_d]
+      temp.shift()
+      return temp.join('');
     },
     viewBox() {
         return `0 0 ${this.width} ${this.height}`;
