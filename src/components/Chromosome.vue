@@ -48,11 +48,14 @@ export default {
   },
   created() {},
   mounted() {
+    
     d3.select(this.$refs['ref_track-overlay'])
         .call(
-          d3.drag()
-            .on("start drag", (event) => this.updateThreshold(event.x) )
-    );
+            
+            d3.drag()
+              .on("drag", (event) => {this.updateThreshold(event.x)})
+        );
+       
   },
   methods: {
      ...mapActions({
@@ -64,9 +67,9 @@ export default {
     getReverseArr,
     updateThreshold(mousePos) {
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
-        this.x2 = mousePos
+          mousePos < this.width ? this.x2 = mousePos : mousePos = this.width 
       } else {
-        this.x1 = mousePos
+          mousePos > 0 ? this.x1 = mousePos : mousePos === 0
       }
     },
   },
