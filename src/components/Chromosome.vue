@@ -69,7 +69,7 @@ export default {
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
           mousePos < this.width ? this.x2 = mousePos : mousePos = this.width 
       } else {
-          mousePos > 0 ? this.x1 = mousePos : mousePos === 0
+          mousePos > 0 ? this.x1 = mousePos : mousePos = 0
       }
     },
   },
