@@ -30,19 +30,19 @@
 </template>
 
 <script>
-import {mapActions, mapGetters, mapState} from "vuex";
 import * as d3 from "d3";
+import {mapActions, mapState} from "vuex";
 import { getLength, getMaxY, getReverseArr} from "../helpers/helpers"
 
 export default {
   name: "Chromosome",
-  props: ["chromosome", "name", "sources", "colorRange", "source", "height", "width"],
+  props: ["chromosome", "name", "sources", "colorRange", "source", "height", "width", "x1AsPption", "preX1", "x2AsPption", "postX2"],
   data() {
     return {
       marginTop: 20,
       marginRight: 0,
       marginBottom: 360,
-      marginLeft: 100,
+      marginLeft: 0,
       domainY: null,
     };
   },
@@ -55,7 +55,7 @@ export default {
     );
   },
   methods: {
-    ...mapActions({
+     ...mapActions({
       updateX1: 'updateX1',
       updateX2: 'updateX2'
     }),
@@ -71,16 +71,11 @@ export default {
     },
   },
   computed: {
-    ...mapState({
+     ...mapState({
       x1: 'x1',
       x2: 'x2',
     }),
-    ...mapGetters({
-      x1AsPption: 'getX1AsPption',
-      preX1: 'getPreX1',
-      x2AsPption: 'getX2AsPption',
-      postX2: 'getPostX2'
-    }),
+
     x1: {
         get () { return this.$store.state.x1},
         set (value) { this.updateX1(value) }

@@ -11,8 +11,9 @@ export default new Vuex.Store({
     sources : sources,
     height: 480,
     width: 1200,
-    x1:10,
-    x2: 1190
+    chartWidth: 400,
+    x1: 0,
+    x2: 1200
   },
   mutations: {
     SET_X1(state, payload) {
@@ -43,7 +44,7 @@ export default new Vuex.Store({
     },
     getPostX2: (state, getters) => {
       return Math.min(getters.getX2AsPption + 0.01, state.width);
-    },
+    }
 
   },
   modules: {

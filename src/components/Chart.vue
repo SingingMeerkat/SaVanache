@@ -1,6 +1,6 @@
 <template>
   <div class="chart-vue">
-    <svg height="60" :width="width">
+    <svg height="60" :width="chartWidth">
       <g v-for="(d, index) in getTargetPositive" :key="index">
         <defs>
           <linearGradient
@@ -27,7 +27,7 @@
         ></rect>
       </g>
     </svg>
-    <svg :height="height" :width="width" :viewBox="viewBox">
+    <svg :height="height" :width="chartWidth" :viewBox="viewBox">
       <text x="80" y="180" font-family="Arial" font-size="9">
         {{ index }}
       </text>
@@ -36,7 +36,7 @@
         <path fill="none" stroke="#9579a6" stroke-width="2" :d="line"></path>
       </g>
     </svg>
-    <svg height="60" :width="width">
+    <svg height="60" :width="chartWidth">
       <g v-for="(d, index) in getTargetNegative" :key="index">
         <defs>
           <linearGradient
@@ -78,6 +78,7 @@ export default {
     "colorRange",
     "sourceByColor",
     "target",
+    "chartWidth"
   ],
   data() {
     return {
@@ -86,7 +87,6 @@ export default {
       marginBottom: 20,
       marginLeft: 30,
       height: 180,
-      width: 400,
     };
   },
   mounted() {},
@@ -97,7 +97,7 @@ export default {
       let x = d3
         .scaleLinear()
         .domain([0, d3.max(this.chromosome, (d) => d.position)])
-        .range([0, this.width - this.marginLeft - this.marginRight]);
+        .range([0, this.chartWidth - this.marginLeft - this.marginRight]);
       return x;
     },
     getScaleY() {
@@ -177,7 +177,7 @@ export default {
       return this.path(this.chromosome);
     },
     viewBox() {
-      return `0 0 ${this.width} ${this.height}`;
+      return `0 0 ${this.chartWidth} ${this.height}`;
     },
   },
 };
