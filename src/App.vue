@@ -10,14 +10,18 @@
     <div>
         <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" :height="height" :width="width" :x1AsPption="x1AsPption" :preX1="preX1" :x2AsPption="x2AsPption" :postX2="postX2" />
     </div>
+    <div>
+      <Table v-if="display && source.length > 0" :source="source" />
+    </div>
   </div>
 </template>
 
 <script>
 import * as d3 from "d3";
-import Chart from "./components/Chart.vue";
 import { mapState,mapGetters} from "vuex";
+import Chart from "./components/Chart.vue";
 import Chromosome from './components/Chromosome.vue';
+import Table from './components/Table.vue';
 import { closestPosition, getReverseArr } from './helpers/helpers'
 
 export default {
@@ -25,6 +29,7 @@ export default {
   components: {
     Chart: Chart,
     Chromosome: Chromosome,
+    Table: Table
   },
   data() {
     return {
@@ -49,7 +54,8 @@ export default {
       ],
       source:[],
       newSources: [],
-      chromosome: {}
+      chromosome: {},
+
     }
   },
   mounted() {
@@ -129,13 +135,13 @@ export default {
         return true
       }
     },
-    getElementsBySources () {
+    getElementsBySources (index) {
         let elementsBySources = [] 
         
         this.newSources.map(item => {
-          return this.name === item.sourceName ? elementsBySources.push( Object.assign({}, {id: item.id, svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: this.getColorScale(item.sourceStart), colorStop: this.getColorScale(item.sourceStop)})) : elementsBySources.push( Object.assign({}, {}))
+          return index === item.sourceName ? elementsBySources.push( Object.assign({}, {id: item.id, svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: this.getColorScale(item.sourceStart), colorStop: this.getColorScale(item.sourceStop)})) : null
         })
-        if (elementsBySources.length === 0) return null;
+
         return elementsBySources  
     },
     getColorStartIndex(start) {
@@ -174,7 +180,8 @@ export default {
         this.name = id
         this.chromosome = chrom
         this.display = true
-        this.source = this.getElementsBySources()
+        this.source = this.getElementsBySources(id)
+
     }
   },
   computed: {
