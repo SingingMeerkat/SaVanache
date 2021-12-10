@@ -8,7 +8,7 @@
     </div>
     <hr>
     <div>
-        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" :height="height" :width="width" :x1AsPption="x1AsPption" :preX1="preX1" :x2AsPption="x2AsPption" :postX2="postX2" />
+        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" :height="height" :width="width" :x1AsPption="x1AsPption" :preX1="preX1" :x2AsPption="x2AsPption" :postX2="postX2" :colorGrey="colorGrey" :colorBlack="colorBlack" />
     </div>
     <div>
       <Table v-if="display && source.length > 0" :source="source" />
@@ -35,6 +35,8 @@ export default {
     return {
       display: false,   
       name:"",
+      colorGrey: "rgb(128, 128, 128)",
+      colorBlack: "rgb(0, 0, 0)",
       colorRange: [
         "#351D0F",
         "#602C17",
@@ -59,169 +61,144 @@ export default {
     }
   },
   mounted() {
-        let givesId = []
-        this.sources.map((el) => {
-          return this.sources.push(Object.assign({}, {svID: el.svID, sourceName: el.targetName, sourceStart: el.targetStart, sourceStop: el.targetStop, strand: el.strand, targetName: el.sourceName, targetStart: el.sourceStart , targetStop: el.sourceStop }))
-        }) 
-        this.sources.map((_, i) => givesId.push(i+1))
-        const newSources = this.sources.map((el, i) => Object.assign({}, {id: givesId[i], svID: givesId[i]+"_"+el.sourceName+"_"+el.targetName, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop} ));
-        this.newSources =  newSources
+      let givesId = []
+      this.sources.map((el) => {
+        return this.sources.push(Object.assign({}, {svID: el.svID, sourceName: el.targetName, sourceStart: el.targetStart, sourceStop: el.targetStop, strand: el.strand, targetName: el.sourceName, targetStart: el.sourceStart , targetStop: el.sourceStop }))
+      }) 
+      this.sources.map((_, i) => givesId.push(i+1))
+      const newSources = this.sources.map((el, i) => Object.assign({}, {id: givesId[i], svID: givesId[i]+"_"+el.sourceName+"_"+el.targetName, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop} ));
+      this.newSources =  newSources
   },
   methods: {
-    closestPosition,
-    getReverseArr,
-    getRangeTargetChart() {
-      let domainArr = []
-      const max = d3.max(this.chromosome, (d => d.position))
-      let x1InChroUnit=(this.x1*max)/this.width
-      let x2InChroUnit=(this.x2*max)/this.width
-      this.colorRange.map((_, i) => {
-        let offset;
-        if (i === 0) {
-          offset = x1InChroUnit;
-        } else if (i === this.colorRange.length) {
-          offset = x2InChroUnit;
-        } else {
-          offset =
-            ++i *
-              ((x2InChroUnit - x1InChroUnit) / this.colorRange.length) +
-            x1InChroUnit;
-        }
-         domainArr.push(offset)
-      });
-      return domainArr
-    },
-    getDomainArr() {
-      const max = d3.max(this.chromosome, (d => d.position))
-      let domainArr = [0]
+      closestPosition,
+      getReverseArr,
+      getRangeDomainBetweenX1X2() {
+        let domainArr = []
+        const max = d3.max(this.chromosome, (d => d.position))
+        let x1InChroUnit=(this.x1*max)/this.width
+        let x2InChroUnit=(this.x2*max)/this.width
+        this.colorRange.map((_, i) => {
+          let offset;
+          if (i === 0) {
+            offset = x1InChroUnit;
+          } else if (i === this.colorRange.length) {
+            offset = x2InChroUnit;
+          } else {
+            offset =
+              ++i *
+                ((x2InChroUnit - x1InChroUnit) / this.colorRange.length) +
+              x1InChroUnit;
+          }
+          domainArr.push(offset)
+        });
+        return domainArr
+      },
+      getDomainArr() {
+        const max = d3.max(this.chromosome, (d => d.position))
+        let domainArr = [0]
 
-      let x1InChroUnit=(this.x1*max)/this.width
-      let leftClampSizeInChroUnit = (this.x1AsPption-this.preX1)*max
-      let left = x1InChroUnit - leftClampSizeInChroUnit
- 
-      
-      domainArr.push(left, left, x1InChroUnit)
-      let rightClampSizeInChroUnit = (this.postX2-this.x2AsPption)*max
-      let x2InChroUnit=(this.x2*max)/this.width
-      let right = x2InChroUnit + rightClampSizeInChroUnit
-
-      this.colorRange.map((_, i) => {
-        let offset;
-        if (i === 0) {
-          offset = x1InChroUnit;
-        } else if (i === this.colorRange.length) {
-          offset = x2InChroUnit;
-        } else {
-          offset =
-            ++i *
-              ((x2InChroUnit - x1InChroUnit) / this.colorRange.length) +
-            x1InChroUnit;
-        }
-         domainArr.push(offset)
-      });
-      domainArr.push(x2InChroUnit, right, right, max)
-
-      return domainArr 
-    },
-    getColorRangeDrag() {
-      let colorArray = ['#808080', '#808080','#000000', '#000000']
-      this.colorRange.map(e=>colorArray.push(e))
-      colorArray.push('#000000', "#000000","#808080", "#808080")
-      return colorArray
-    },
-    checkBetween(el) {
-      const max = d3.max(this.chromosome, (d => d.position))
-      if(el.targetStart > (this.x1*max)/this.chartWidth && el.targetStart < (this.x2*max)/this.chartWidth && el.targetStop > (this.x1*max)/this.chartWidth && el.targetStop < (this.x2*max)/this.chartWidth) {
-        return true
-      }
-    },
-    getElementsBySources (index) {
-        let elementsBySources = [] 
+        let x1InChroUnit=(this.x1*max)/this.width
+        let leftClampSizeInChroUnit = (this.x1AsPption-this.preX1)*max
+        let left = x1InChroUnit - leftClampSizeInChroUnit
         
-        this.newSources.map(item => {
-          return index === item.sourceName ? elementsBySources.push( Object.assign({}, {id: item.id, svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: this.getColorScale(item.sourceStart), colorStop: this.getColorScale(item.sourceStop)})) : null
+        domainArr.push(left, left, x1InChroUnit)
+        let rightClampSizeInChroUnit = (this.postX2-this.x2AsPption)*max
+        let x2InChroUnit=(this.x2*max)/this.width
+        let right = x2InChroUnit + rightClampSizeInChroUnit
+        this.getRangeDomainBetweenX1X2().map(e=>domainArr.push(e))
+        domainArr.push(x2InChroUnit, right, right, max)
+
+        return domainArr 
+      },
+      getColorRangeDrag() {
+        let colorArray = [this.colorGrey, this.colorGrey, this.colorBlack, this.colorBlack]
+        this.colorRange.map(e=>colorArray.push(e))
+        colorArray.push(this.colorBlack, this.colorBlack, this.colorGrey, this.colorGrey)
+        return colorArray
+      },
+      checkSourceNotGreyOrBlack(el) {
+        if(this.getColorScale(el.sourceStart) != (this.colorGrey || this.colorBlack) && this.getColorScale(el.sourceStop) != (this.colorGrey || this.colorBlack) ) {
+          return true
+        } 
+      },
+      getElementsBySources (index) {
+          let elementsBySources = [] 
+          this.newSources.map(item => {
+            return index === item.sourceName ? elementsBySources.push( Object.assign({}, {id: item.id, svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: this.getColorScale(item.sourceStart), colorStop: this.getColorScale(item.sourceStop)})) : null
+          })
+          return elementsBySources  
+      },
+      getColorStartIndex(start) {
+        let indexColorStartInScale;
+        indexColorStartInScale = this.getRangeDomainBetweenX1X2().indexOf(this.closestPosition(this.getRangeDomainBetweenX1X2(), start))
+        this.colorRange.map((_, i ) => {
+            if(i===indexColorStartInScale) {
+              return indexColorStartInScale
+            }
         })
+        return indexColorStartInScale
+      },
+      getColorStopIndex(stop) {
+        let indexColorStopInScale;
+        indexColorStopInScale = this.getRangeDomainBetweenX1X2().indexOf(this.closestPosition(this.getRangeDomainBetweenX1X2(), stop))
+        this.colorRange.map((_, i ) => {
+            if(i===indexColorStopInScale) {
+              return indexColorStopInScale
+            }
 
-        return elementsBySources  
-    },
-    getColorStartIndex(start) {
-      let indexColorStartInScale;
-
-       indexColorStartInScale = this.getRangeTargetChart().indexOf(this.closestPosition(this.getRangeTargetChart(), start))
-      this.colorRange.map((_, i ) => {
-          if(i===indexColorStartInScale) {
-            return indexColorStartInScale
-          }
-      })
-      return indexColorStartInScale
-    },
-    getColorStopIndex(stop) {
-      let indexColorStopInScale;
-      indexColorStopInScale = this.getRangeTargetChart().indexOf(this.closestPosition(this.getRangeTargetChart(), stop))
-       this.colorRange.map((_, i ) => {
-          if(i===indexColorStopInScale) {
-            return indexColorStopInScale
-          }
-
-      })
-      return indexColorStopInScale
-    },
-    getTargetByChrom (index) {
-        let result = []
-        this.source.map((el) => {
-            if(el.targetName === index && this.checkBetween(el)) {
-                
-                result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: el.colorStart, colorStop: el.colorStop, colorRangeRgb: el.strand === "+" ? this.colorRange.slice(this.getColorStartIndex(el.sourceStart), this.getColorStopIndex(el.sourceStop)+1)  : this.getReverseArr(this.colorRange.slice(this.getColorStartIndex(el.sourceStart), this.getColorStopIndex(el.sourceStop)+1))} ))
-            } 
         })
-        return result
-    },
-    displayCurrentChrom(id, chrom) {
-        this.name = id
-        this.chromosome = chrom
-        this.display = true
-        this.source = this.getElementsBySources(id)
-
-    }
+        return indexColorStopInScale
+      },
+      getTargetByChrom (index) {
+          let result = []
+          this.source.map((el) => {
+              if(el.targetName === index && this.checkSourceNotGreyOrBlack(el)) {
+                  result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: this.getColorScale(el.sourceStart), colorStop: this.getColorScale(el.sourceStop), colorRangeRgb: el.strand === "+" ? this.colorRange.slice(this.getColorStartIndex(el.sourceStart), this.getColorStopIndex(el.sourceStop)+1)  : this.getReverseArr(this.colorRange.slice(this.getColorStartIndex(el.sourceStart), this.getColorStopIndex(el.sourceStop)+1))} ))
+              } 
+          })
+          return result
+      },
+      displayCurrentChrom(id, chrom) {
+          this.name = id
+          this.chromosome = chrom
+          this.display = true
+          this.source = this.getElementsBySources(id)
+      }
   },
   computed: {
-     ...mapState({
-      x1: 'x1',
-      x2: 'x2',
-    }),
-    ...mapGetters({
-      x1AsPption: 'getX1AsPption',
-      preX1: 'getPreX1',
-      x2AsPption: 'getX2AsPption',
-      postX2: 'getPostX2'
-    }),
-
-    getColorScale() {
-      let colorRange = this.getColorRangeDrag()
-      let domainArr = this.getDomainArr()
-      let colorScale = d3.scaleLinear()
-                .domain(domainArr)
-                .range(colorRange)
-      return colorScale  
-    },
-   
-    chromosomes () {
-      return this.$store.state.chromosomes
-    },
-    sources () {
-      return this.$store.state.sources
-    },
-    width () {
-      return this.$store.state.width
-    },
-    chartWidth () {
-      return this.$store.state.chartWidth
-    },
-    height () {
-      return this.$store.state.height
-    },
-   
-
+      ...mapState({
+        x1: 'x1',
+        x2: 'x2',
+      }),
+      ...mapGetters({
+        x1AsPption: 'getX1AsPption',
+        preX1: 'getPreX1',
+        x2AsPption: 'getX2AsPption',
+        postX2: 'getPostX2'
+      }),
+      getColorScale() {
+        let colorRange = this.getColorRangeDrag()
+        let domainArr = this.getDomainArr()
+        let colorScale = d3.scaleLinear()
+                  .domain(domainArr)
+                  .range(colorRange)
+        return colorScale  
+      },
+      chromosomes () {
+        return this.$store.state.chromosomes
+      },
+      sources () {
+        return this.$store.state.sources
+      },
+      width () {
+        return this.$store.state.width
+      },
+      chartWidth () {
+        return this.$store.state.chartWidth
+      },
+      height () {
+        return this.$store.state.height
+      },
   }
  
 };

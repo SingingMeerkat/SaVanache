@@ -38,7 +38,7 @@ const utils = new SVGPathUtils();
 
 export default {
   name: "Chromosome",
-  props: ["chromosome", "name", "sources", "colorRange", "source", "height", "width", "x1AsPption", "preX1", "x2AsPption", "postX2"],
+  props: ["chromosome", "name", "sources", "colorRange", "source", "height", "width", "x1AsPption", "preX1", "x2AsPption", "postX2", "colorBlack", "colorGrey"],
   data() {
     return {
       marginTop: 20,
@@ -53,7 +53,7 @@ export default {
     d3.select(this.$refs['ref_track-overlay'])
         .call(
             d3.drag()
-              .on("drag", (event) => {this.updateThreshold(event.x)})
+              .on("start drag", (event) => this.updateThreshold(event.x))
         );
   },
   methods: {
@@ -90,22 +90,22 @@ export default {
         {
           key: "farLeft",
           offset: 0,
-          color: "grey",
+          color: this.colorGrey,
         },
         {
           key: "Left",
           offset: this.preX1,
-          color: "grey",
+          color: this.colorGrey,
         },
         {
           key: "firstBoundaryLeft",
           offset: this.preX1,
-          color: "black",
+          color: this.colorBlack,
         },
         {
           key: "firstBoundaryRight",
           offset: this.x1AsPption,
-          color: "black",
+          color: this.colorBlack,
         },
       ];
       this.colorRange.map((color, i) => {
@@ -136,22 +136,22 @@ export default {
         {
           key: "secondBoundaryLeft",
           offset: this.x2AsPption,
-          color: "black",
+          color: this.colorBlack,
         },
         {
           key: "secondBoundaryRight",
           offset: this.postX2,
-          color: "black",
+          color: this.colorBlack,
         },
         {
           key: "Right",
           offset: this.postX2,
-          color: "grey",
+          color: this.colorGrey,
         },
         {
           key: "farRight",
           offset: 100,
-          color: "grey",
+          color: this.colorGrey,
         }
       );
 
