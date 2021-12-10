@@ -116,10 +116,13 @@ export default {
         colorArray.push(this.colorBlack, this.colorBlack, this.colorGrey, this.colorGrey)
         return colorArray
       },
-      checkSourceNotGreyOrBlack(el) {
-        if(this.getColorScale(el.sourceStart) != (this.colorGrey || this.colorBlack) && this.getColorScale(el.sourceStop) != (this.colorGrey || this.colorBlack) ) {
+      checkSourceBetweenX1X2(el) {
+        const max = d3.max(this.chromosome, (d => d.position))
+        let x1InChroUnit=(this.x1*max)/this.width
+        let x2InChroUnit=(this.x2*max)/this.width
+        if((el.sourceStart && el.sourceStop)>x1InChroUnit &&(el.sourceStart && el.sourceStop)<x2InChroUnit) {
           return true
-        } 
+        }
       },
       getElementsBySources (index) {
           let elementsBySources = [] 
@@ -152,7 +155,7 @@ export default {
       getTargetByChrom (index) {
           let result = []
           this.source.map((el) => {
-              if(el.targetName === index && this.checkSourceNotGreyOrBlack(el)) {
+              if(el.targetName === index && this.checkSourceBetweenX1X2(el)) {
                   result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: this.getColorScale(el.sourceStart), colorStop: this.getColorScale(el.sourceStop), colorRangeRgb: el.strand === "+" ? this.colorRange.slice(this.getColorStartIndex(el.sourceStart), this.getColorStopIndex(el.sourceStop)+1)  : this.getReverseArr(this.colorRange.slice(this.getColorStartIndex(el.sourceStart), this.getColorStopIndex(el.sourceStop)+1))} ))
               } 
           })
