@@ -1,38 +1,42 @@
 <template>
   <div class="container">
     <h2>{{ name }}</h2>
-    <svg :width="width" :height="height" :viewBox="viewBox">
-      <defs>
-        <linearGradient id="lingrad" x1="0" y1="0" x2="1" y2="0">
-          <stop v-for="stop in stops" :key="stop.key" :offset="stop.offset" :stop-color="stop.color"></stop>
-        </linearGradient>
-      </defs>
+    <div class="flex-wrap">
+        <div class="tooltip-left"></div>
+          <svg :width="width" :height="height" :viewBox="viewBox">
+            <defs>
+              <linearGradient id="lingrad" x1="0" y1="0" x2="1" y2="0">
+                <stop v-for="stop in stops" :key="stop.key" :offset="stop.offset" :stop-color="stop.color"></stop>
+              </linearGradient>
+            </defs>
 
-      <g>
-        <path
-          fill="url(#lingrad)"
-          :d="`${line}  L${invertedLine} Z`"
-        ></path>
-        <path stroke="black" fill="none" :d="`${line} M${invertedLine}`"></path>
-      </g>
-       <rect
-        x=0
-        y=0
-        :width="width"
-        :height="height"
-        fill='transparent'
-        cursor="crosshair"
-        class='track-overlay'
-        ref='ref_track-overlay'
-      />
-    </svg>
+            <g>
+              <path
+                fill="url(#lingrad)"
+                :d="`${line}  L${invertedLine} Z`"
+              ></path>
+              <path stroke="black" fill="none" :d="`${line} M${invertedLine}`"></path>
+            </g>
+            <rect
+              x=0
+              y=0
+              :width="width"
+              :height="height"
+              fill='transparent'
+              cursor="crosshair"
+              class='track-overlay'
+              ref='ref_track-overlay'
+            />
+          </svg>
+          <div class="tooltip-right"></div>
+    </div>
   </div>
 </template>
 
 <script>
 import * as d3 from "d3";
 import {mapActions, mapState} from "vuex";
-import { getLength, getMaxY } from "../helpers/helpers"
+import { getLength, getMaxX, getMaxY } from "../helpers/helpers"
 import {SVGPathUtils} from 'svg-path-utils';
 const utils = new SVGPathUtils();
 
@@ -63,11 +67,17 @@ export default {
     }),
     getLength,
     getMaxY,
+    getMaxX,
     updateThreshold(mousePos) {
+      const max = getMaxX(this.chromosome)
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
           mousePos < this.width ? this.x2 = mousePos : mousePos = this.width 
+          d3.select(".tooltip-right")
+            .html("Position right: " + Math.round((this.x2*max)/this.width))
       } else {
           mousePos > 0 ? this.x1 = mousePos : mousePos = 0
+          d3.select(".tooltip-left")
+            .html("Position left: " + Math.round((this.x1*max)/this.width))
       }
     },
   },
@@ -228,7 +238,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-line {
-  cursor: move;
+.flex-wrap {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
 }
+
+.tooltip-right{
+  margin-left : 3rem;
+}
+
+.tooltip-left{
+  margin-right : 3rem;
+}
+
 </style>
