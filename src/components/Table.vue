@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="t in source" :key="t.id">
+                <tr v-for="t in getListTableOfTargetChrom" :key="t.id">
                     <td>{{t.svID}}</td>
                     <td>{{t.sourceName}}</td>
                     <td>{{t.sourceStart}}</td>
@@ -35,7 +35,7 @@
 export default {
   name: "Table",
   props: [
-    "source",
+    "getListTableOfTargetChrom",
   ],  
 };
 </script>
