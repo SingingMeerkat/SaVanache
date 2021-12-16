@@ -2,55 +2,108 @@
     <div class="scale">
         <h1>Menu</h1>
         <div id="#slider-wrapper">
-          <Slider v-model="value" :min="1" :max="10000000" />
-          <svg :width="widthScale" height="30">
+            <svg :width="widthScale" height="20">
+              <rect
+                  x=0
+                  y=0
+                  :width="widthScale"
+                  :height="heightScale"
+                  fill='transparent'
+                  cursor="crosshair"
+                  class='track-overlay'
+                  ref='ref_track-overlay'
+              />
+              <rect
+                :x="x1Target"
+                y=0
+                width="5"
+                height="40"
+                fill='black'
+                cursor="crosshair"
+              />
+              <rect
+                :x="x2Target"
+                y=0
+                width="5"
+                height="40"
+                fill='black'
+                cursor="crosshair"
+              />
+             
+          </svg>
+          <svg :width="widthScale" :height="heightScale">
               <g id="wrapper">
               </g>
           </svg>
         </div>
-        
     </div>
 </template>
 
 <script>
 import * as d3 from "d3"; 
-import Vue from "vue";
-import VueCompositionAPI from '@vue/composition-api'
-Vue.use(VueCompositionAPI)
-import Slider from '@vueform/slider/dist/slider.vue2.js'
 import { mapActions } from "vuex";
 
 export default {
   name: "TargetScale",
-  components: {
-      Slider,
-  },
-  props: [
-    "getListTableOfTargetChrom",
-  ],
-   data() {
+
+  data() {
       return {
         widthScale: 500,
-        value: [1, 10000000]
+        heightScale: 30,
+        x1Target:5,
+        x2Target:485,
+        valueX1Unit:50,
+        valueX2Unit:10000000
+        
       }
     },
   mounted() {
-    this.axis(d3.scaleLog().domain([1e0, 1e7]))
+    this.axis(d3.scaleLog().domain([50, 1e7]))
                 .ticks(10, "~s")
                 .render()
+
+    d3.select(this.$refs['ref_track-overlay'])
+        .call(
+            d3.drag()
+              .on("start drag", (event) => this.updateThreshold(event.x))
+        );
+        console.log(this.xScale(50))
+        console.log(this.xScale(10000000))
+        console.log(this.xScale.invert(490))
   
   },
   watch: {
-    value() {
-      this.updateLocalAreaSelected(this.value);
+    x1Target(){
+      this.updateX1Target(this.x1Target)
     },
+    x2Target(){
+      this.updateX2Target(this.x2Target)
+    },
+    valueX1Unit(){
+      this.updateValueX1Unit(this.valueX1Unit)
+    },
+    valueX2Unit(){
+      this.updateValueX2Unit(this.valueX2Unit)
+    }
   },
   methods: {
-    ...mapActions([
-      'updateLocalAreaSelected',
-    ]),
+     ...mapActions({
+      updateX1Target: 'updateX1Target',
+      updateX2Target: 'updateX2Target',
+      updateValueX1Unit: 'updateValueX1Unit',
+      updateValueX2Unit: 'updateValueX2Unit'
+    }),
+    updateThreshold(mousePos) {
+      if (Math.abs(mousePos - this.x1Target) > Math.abs(mousePos - this.x2Target)) {
+          mousePos < this.widthScale ? this.x2Target = mousePos : mousePos = this.widthScale 
+          this.valueX2Unit = this.xScale.invert(this.x2Target)     
+      } else {
+          mousePos > 0 ? this.x1Target = mousePos : mousePos = 0  
+          this.valueX1Unit = this.xScale.invert(this.x1Target) 
+      }
+    },
     axis(scale) {
-        return Object.assign(d3.axisBottom(scale.range([0, this.widthScale-10])), {
+        return Object.assign(d3.axisBottom(scale.range([5, this.widthScale-10])), {
             render() {
             return d3.select('#wrapper')
                 .call(this)
@@ -62,7 +115,7 @@ export default {
 
   computed: {
     xScale() {
-          return d3.scaleLog().domain([1e0, 1e7])
+          return d3.scaleLog().domain([50, 1e7])
                     .range([0, this.widthScale-10])
     },
     
@@ -77,12 +130,8 @@ export default {
 .scale {
     margin-top: 5rem;
     margin-left: 5.5rem;
-    width: 490px;
-    .slider-connect {
-      background-color: rgb(0, 188, 255);
-    }
-
-
+    width: 500px;
+    
 }
 
 </style>

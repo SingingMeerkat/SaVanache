@@ -134,7 +134,7 @@ export default {
       },
       checkTargetByScale(el) {
         const difference = el.targetStop - el.targetStart
-        if(this.localAreaSelected[0]<=difference && this.localAreaSelected[1]>=difference) {
+        if(this.valueX1Unit<=difference && this.valueX2Unit>=difference) {
           return true
         }
       },
@@ -195,7 +195,10 @@ export default {
       ...mapState({
         x1: 'x1',
         x2: 'x2',
-        localAreaSelected: 'localAreaSelected'
+        x1Target: 'x1Target',
+        x2Target: 'x2Target',
+        valueX1Unit: 'valueX1Unit',
+        valueX2Unit: 'valueX2Unit'
       }),
       ...mapGetters({
         x1AsPption: 'getX1AsPption',

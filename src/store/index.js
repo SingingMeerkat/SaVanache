@@ -14,7 +14,11 @@ export default new Vuex.Store({
     chartWidth: 400,
     x1: 0,
     x2: 1200,
-    localAreaSelected: [1, 10000000],
+    x1Target:5,
+    x2Target:485,
+    valueX1Unit:50,
+    valueX2Unit:10000000
+
   },
   mutations: {
     SET_X1(state, payload) {
@@ -23,8 +27,17 @@ export default new Vuex.Store({
     SET_X2(state, payload) {
       state.x2 = payload
     },
-    SET_LOCAL_AREA_SELECTED(state, payload) {
-      state.localAreaSelected = payload
+    SET_X1TARGET(state, payload) {
+      state.x1Target= payload
+    },
+    SET_X2TARGET(state, payload) {
+      state.x2Target = payload
+    },
+    SET_VALUEX1UNIT(state, payload) {
+      state.valueX1Unit= payload
+    },
+    SET_VALUEX2UNIT(state, payload) {
+      state.valueX2Unit = payload
     },
 
   },
@@ -35,8 +48,17 @@ export default new Vuex.Store({
     updateX2({commit}, x2) {
       commit('SET_X2', x2)
     },
-    updateLocalAreaSelected({commit}, coordinates) {
-      commit('SET_LOCAL_AREA_SELECTED', coordinates)
+    updateX1Target({commit}, x1Target) {
+      commit('SET_X1TARGET', x1Target)
+    },
+    updateX2Target({commit}, x2Target) {
+      commit('SET_X2TARGET', x2Target)
+    },
+    updateValueX1Unit({commit}, valueX1Unit) {
+      commit('SET_VALUEX1UNIT', valueX1Unit)
+    },
+    updateValueX2Unit({commit}, valueX2Unit) {
+      commit('SET_VALUEX2UNIT', valueX2Unit)
     },
   },
   getters: {
