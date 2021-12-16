@@ -13,7 +13,8 @@ export default new Vuex.Store({
     width: 1200,
     chartWidth: 400,
     x1: 0,
-    x2: 1200
+    x2: 1200,
+    localAreaSelected: [1, 10000000],
   },
   mutations: {
     SET_X1(state, payload) {
@@ -21,7 +22,11 @@ export default new Vuex.Store({
     },
     SET_X2(state, payload) {
       state.x2 = payload
-    }
+    },
+    SET_LOCAL_AREA_SELECTED(state, payload) {
+      state.localAreaSelected = payload
+    },
+
   },
   actions: {
     updateX1({commit}, x1) {
@@ -30,7 +35,9 @@ export default new Vuex.Store({
     updateX2({commit}, x2) {
       commit('SET_X2', x2)
     },
-
+    updateLocalAreaSelected({commit}, coordinates) {
+      commit('SET_LOCAL_AREA_SELECTED', coordinates)
+    },
   },
   getters: {
     getX1AsPption: (state) => {

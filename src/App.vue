@@ -1,17 +1,23 @@
 <template>
   <div class="container">
-    <h1>SaVanache</h1>
-    <div  class="chromosomes-grid">
-      <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index, chromosome)" >
-            <Chart :chromosome="chromosome" :index="index" :colorRange="colorRange" :source="source" :target="getTargetByChrom(index)" :chartWidth="chartWidth"/>
+    <div class="menu">
+        <TargetScale :getListTableOfTargetChrom="getListTableOfTargetChrom()"/>
+    </div>
+    <div class="charts">
+      <h1>SaVanache</h1>
+      <div  class="chromosomes-grid">
+        <div v-for="(chromosome, index) in chromosomes" :key="index" @click="displayCurrentChrom(index, chromosome)" >
+          <Chart :chromosome="chromosome" :index="index" :colorRange="colorRange" :source="source" :target="getTargetByChrom(index)" :chartWidth="chartWidth"/>
+        </div>
       </div>
-    </div>
-    <hr>
-    <div>
-        <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" :height="height" :width="width" :x1AsPption="x1AsPption" :preX1="preX1" :x2AsPption="x2AsPption" :postX2="postX2" :colorGrey="colorGrey" :colorBlack="colorBlack" />
-    </div>
-    <div>
-      <Table v-if="display && getListTableOfTargetChrom().length>0" :getListTableOfTargetChrom="getListTableOfTargetChrom()" />
+      
+      <hr>
+      <div>
+          <Chromosome v-if="display" :name="name" :chromosome="chromosome" :colorRange="colorRange" :source="source" :height="height" :width="width" :x1AsPption="x1AsPption" :preX1="preX1" :x2AsPption="x2AsPption" :postX2="postX2" :colorGrey="colorGrey" :colorBlack="colorBlack" />
+      </div>
+      <div>
+        <Table v-if="display && getListTableOfTargetChrom().length>0" :getListTableOfTargetChrom="getListTableOfTargetChrom()" />
+      </div>
     </div>
   </div>
 </template>
@@ -22,6 +28,7 @@ import { mapState,mapGetters} from "vuex";
 import Chart from "./components/Chart.vue";
 import Chromosome from './components/Chromosome.vue';
 import Table from './components/Table.vue';
+import TargetScale from './components/TargetScale.vue';
 import { closestPosition, getReverseArr } from './helpers/helpers'
 
 export default {
@@ -29,7 +36,8 @@ export default {
   components: {
     Chart: Chart,
     Chromosome: Chromosome,
-    Table: Table
+    Table: Table,
+    TargetScale: TargetScale
   },
   data() {
     return {
@@ -124,6 +132,12 @@ export default {
           return true
         }
       },
+      checkTargetByScale(el) {
+        const difference = el.targetStop - el.targetStart
+        if(this.localAreaSelected[0]<=difference && this.localAreaSelected[1]>=difference) {
+          return true
+        }
+      },
       getElementsBySources (index) {
           let elementsBySources = [] 
           this.newSources.map(item => {
@@ -155,7 +169,7 @@ export default {
       getTargetByChrom (index) {
           let result = []
           this.source.map((el) => {
-              if(el.targetName === index && this.checkSourceBetweenX1X2(el)) {
+              if(el.targetName === index && this.checkSourceBetweenX1X2(el) && this.checkTargetByScale(el)) {
                   result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop, colorStart: this.getColorScale(el.sourceStart), colorStop: this.getColorScale(el.sourceStop), colorRangeRgb: el.strand === "+" ? this.colorRange.slice(this.getColorStartIndex(el.sourceStart), this.getColorStopIndex(el.sourceStop)+1)  : this.getReverseArr(this.colorRange.slice(this.getColorStartIndex(el.sourceStart), this.getColorStopIndex(el.sourceStop)+1))} ))
               } 
           })
@@ -181,6 +195,7 @@ export default {
       ...mapState({
         x1: 'x1',
         x2: 'x2',
+        localAreaSelected: 'localAreaSelected'
       }),
       ...mapGetters({
         x1AsPption: 'getX1AsPption',
@@ -222,42 +237,55 @@ body {
   font-size: "Arial";
 
     .container {
+      display: flex;
       margin: 0 auto;
-      width: 90%;
+      width: 100%;
       text-align: center;
-      h1 {
-        margin-bottom: 0;
+      .menu {
+        width: 30%;
       }
 
-      hr {
-        margin: 40px 0;
+      .charts {
+        width: 70%;
+        height: 1200px;
+        border-left: 1px solid rgb(204, 204, 204);
+        
+          h1 {
+            margin-bottom: 0;
+          }
+
+          hr {
+            margin: 40px 0;
+            border-top: 1px solid rgb(204, 204, 204);
+          }
+
+          .chromosomes-grid {
+            margin: 0 auto;
+            padding-bottom: 2rem;
+            width: 95%;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            grid-template-rows: 1fr 1fr;
+            overflow-x: scroll;
+
+            &::-webkit-scrollbar {
+              width:100%;
+            }
+
+            &::-webkit-scrollbar-track {
+              background-color: #e4e4e4;
+              border-radius: 100px;
+              border-top: 5px solid #fff;
+              border-bottom: 5px solid #fff;
+            }
+
+            &::-webkit-scrollbar-thumb {
+              background-color: #9579a6;
+              border-radius: 100px;
+            }
+        }
       }
-
-      .chromosomes-grid {
-        margin: 0 auto;
-        padding-bottom: 2rem;
-        width: 95%;
-        display: grid;
-        grid-template-columns: repeat(12, 1fr);
-        grid-template-rows: 1fr 1fr;
-        overflow-x: scroll;
-
-        &::-webkit-scrollbar {
-          width:100%;
-        }
-
-        &::-webkit-scrollbar-track {
-          background-color: #e4e4e4;
-          border-radius: 100px;
-          border-top: 5px solid #fff;
-          border-bottom: 5px solid #fff;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background-color: #9579a6;
-          border-radius: 100px;
-        }
-      }
+      
 
     }
 }

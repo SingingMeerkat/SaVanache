@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container-chro">
     <h2>{{ name }}</h2>
     <div class="flex-wrap">
         <div class="tooltip-left"></div>
@@ -36,7 +36,7 @@
 <script>
 import * as d3 from "d3";
 import {mapActions, mapState} from "vuex";
-import { getLength, getMaxX, getMaxY } from "../helpers/helpers"
+import { getLength, getMaxX, getMaxY, numberWithCommas } from "../helpers/helpers"
 import {SVGPathUtils} from 'svg-path-utils';
 const utils = new SVGPathUtils();
 
@@ -68,16 +68,17 @@ export default {
     getLength,
     getMaxY,
     getMaxX,
+    numberWithCommas,
     updateThreshold(mousePos) {
       const max = getMaxX(this.chromosome)
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
           mousePos < this.width ? this.x2 = mousePos : mousePos = this.width 
           d3.select(".tooltip-right")
-            .html("Position right: " + Math.round((this.x2*max)/this.width))
+            .html("Position right: " + this.numberWithCommas(Math.round((this.x2*max)/this.width)))
       } else {
           mousePos > 0 ? this.x1 = mousePos : mousePos = 0
           d3.select(".tooltip-left")
-            .html("Position left: " + Math.round((this.x1*max)/this.width))
+            .html("Position left: " + this.numberWithCommas(Math.round((this.x1*max)/this.width)))
       }
     },
   },
@@ -238,18 +239,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.flex-wrap {
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
+.container-chro {
+  margin: 0 auto;
+  text-align:center;
+  .flex-wrap {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .tooltip-right{
+    margin-left : 3rem;
+  }
+
+  .tooltip-left{
+    margin-right : 3rem;
+  }
+
 }
 
-.tooltip-right{
-  margin-left : 3rem;
-}
-
-.tooltip-left{
-  margin-right : 3rem;
-}
 
 </style>
