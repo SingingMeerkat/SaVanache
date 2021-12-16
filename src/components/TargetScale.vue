@@ -45,7 +45,6 @@ import { mapActions } from "vuex";
 
 export default {
   name: "TargetScale",
-
   data() {
       return {
         widthScale: 500,
@@ -54,7 +53,6 @@ export default {
         x2Target:485,
         valueX1Unit:50,
         valueX2Unit:10000000
-        
       }
     },
   mounted() {
@@ -67,10 +65,6 @@ export default {
             d3.drag()
               .on("start drag", (event) => this.updateThreshold(event.x))
         );
-        console.log(this.xScale(50))
-        console.log(this.xScale(10000000))
-        console.log(this.xScale.invert(490))
-  
   },
   watch: {
     x1Target(){
@@ -112,19 +106,14 @@ export default {
         });
     }
   },
-
   computed: {
     xScale() {
           return d3.scaleLog().domain([50, 1e7])
                     .range([0, this.widthScale-10])
     },
-    
   }
-  
 };
 </script>
-
-<style src="@vueform/slider/themes/default.css"></style>
 
 <style lang="scss" scoped>
 .scale {
