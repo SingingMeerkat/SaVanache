@@ -72,11 +72,11 @@ export default {
     updateThreshold(mousePos) {
       const max = getMaxX(this.chromosome)
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
-          mousePos < this.width ? this.x2 = mousePos : mousePos = this.width 
+          mousePos < this.width ? this.x2 = mousePos : this.x2 = this.width 
           d3.select(".tooltip-right")
             .html("Position right: " + this.numberWithCommas(Math.round((this.x2*max)/this.width)))
       } else {
-          mousePos > 0 ? this.x1 = mousePos : mousePos = 0
+          mousePos > 0 ? this.x1 = mousePos : this.x1 = 0
           d3.select(".tooltip-left")
             .html("Position left: " + this.numberWithCommas(Math.round((this.x1*max)/this.width)))
       }

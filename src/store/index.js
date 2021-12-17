@@ -14,8 +14,8 @@ export default new Vuex.Store({
     chartWidth: 400,
     x1: 0,
     x2: 1200,
-    x1Target:5,
-    x2Target:485,
+    x1Target:0,
+    x2Target:500,
     valueX1Unit:50,
     valueX2Unit:10000000
 

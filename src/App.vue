@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="menu">
-        <TargetScale :getListTableOfTargetChrom="getListTableOfTargetChrom()"/>
+        <TargetScale />
     </div>
     <div class="charts">
       <h1>SaVanache</h1>
@@ -71,9 +71,11 @@ export default {
   mounted() {
       let givesId = []
       this.sources.map((el) => {
+        //inside sources array I add target as source (I revert target and source)
         return this.sources.push(Object.assign({}, {svID: el.svID, sourceName: el.targetName, sourceStart: el.targetStart, sourceStop: el.targetStop, strand: el.strand, targetName: el.sourceName, targetStart: el.sourceStart , targetStop: el.sourceStop }))
       }) 
       this.sources.map((_, i) => givesId.push(i+1))
+       // With newSources I add id and a new svID structure of id
       const newSources = this.sources.map((el, i) => Object.assign({}, {id: givesId[i], svID: givesId[i]+"_"+el.sourceName+"_"+el.targetName, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop} ));
       this.newSources =  newSources
   },
@@ -81,6 +83,7 @@ export default {
       closestPosition,
       getReverseArr,
       getRangeDomainBetweenX1X2() {
+        //It's the range on chroUnit I need to build my getDomainArr function
         let domainArr = []
         const max = d3.max(this.chromosome, (d => d.position))
         let x1InChroUnit=(this.x1*max)/this.width
@@ -102,6 +105,7 @@ export default {
         return domainArr
       },
       getDomainArr() {
+        //This function build an array with the full domain used on my getColorScale function
         const max = d3.max(this.chromosome, (d => d.position))
         let domainArr = [0]
 
@@ -119,12 +123,14 @@ export default {
         return domainArr 
       },
       getColorRangeDrag() {
+        //here I create an array of color range that I need inside my getColorScale function
         let colorArray = [this.colorGrey, this.colorGrey, this.colorBlack, this.colorBlack]
         this.colorRange.map(e=>colorArray.push(e))
         colorArray.push(this.colorBlack, this.colorBlack, this.colorGrey, this.colorGrey)
         return colorArray
       },
       checkSourceBetweenX1X2(el) {
+        //I check if my source variation is between X1 and X2, positions of the drag left and drag right
         const max = d3.max(this.chromosome, (d => d.position))
         let x1InChroUnit=(this.x1*max)/this.width
         let x2InChroUnit=(this.x2*max)/this.width
@@ -133,6 +139,7 @@ export default {
         }
       },
       getMaxValue() {
+        //I need this condition to display the target that have a size >= 10000000
         let valueMax;
         if(this.valueX2Unit>=10000000) {
           valueMax = 10000000
@@ -140,6 +147,7 @@ export default {
         return valueMax
       },
       checkTargetByScale(el) {
+        // I check if the size of the target is between the X1 and X2 of the slider menu
         const difference = el.targetStop - el.targetStart
         if((this.valueX1Unit<=difference && this.valueX2Unit>=difference) || (this.valueX1Unit<=difference && this.getMaxValue() < difference)) {
           return true
@@ -252,11 +260,11 @@ body {
       width: 100%;
       text-align: center;
       .menu {
-        width: 30%;
+        width: 25%;
       }
 
       .charts {
-        width: 70%;
+        width: 75%;
         height: 1200px;
         border-left: 1px solid rgb(204, 204, 204);
         
