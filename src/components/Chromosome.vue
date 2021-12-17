@@ -2,7 +2,9 @@
   <div class="container-chro">
     <h2>{{ name }}</h2>
     <div class="flex-wrap">
-        <div class="tooltip-left"></div>
+        <div class="tooltip-left">
+          <p>Position left : {{ numberWithCommas(Math.round((x1*getMaxX(chromosome))/width)) }}</p>
+        </div>
           <svg :width="width" :height="height" :viewBox="viewBox">
             <defs>
               <linearGradient id="lingrad" x1="0" y1="0" x2="1" y2="0">
@@ -28,7 +30,9 @@
               ref='ref_track-overlay'
             />
           </svg>
-          <div class="tooltip-right"></div>
+          <div class="tooltip-right">
+            <p>Position left : {{ numberWithCommas(Math.round((x2*getMaxX(chromosome))/width)) }}</p>
+          </div>
     </div>
   </div>
 </template>
@@ -70,15 +74,10 @@ export default {
     getMaxX,
     numberWithCommas,
     updateThreshold(mousePos) {
-      const max = getMaxX(this.chromosome)
       if (Math.abs(mousePos - this.x1) > Math.abs(mousePos - this.x2)) {
-          mousePos < this.width ? this.x2 = mousePos : this.x2 = this.width 
-          d3.select(".tooltip-right")
-            .html("Position right: " + this.numberWithCommas(Math.round((this.x2*max)/this.width)))
+          mousePos < this.width ? this.x2 = mousePos : this.x2 = this.width    
       } else {
           mousePos > 0 ? this.x1 = mousePos : this.x1 = 0
-          d3.select(".tooltip-left")
-            .html("Position left: " + this.numberWithCommas(Math.round((this.x1*max)/this.width)))
       }
     },
   },
@@ -249,10 +248,14 @@ export default {
   }
 
   .tooltip-right{
+    width: 180px;
+    text-align: end;
     margin-left : 3rem;
   }
 
   .tooltip-left{
+    width: 180px;
+    text-align: start;
     margin-right : 3rem;
   }
 

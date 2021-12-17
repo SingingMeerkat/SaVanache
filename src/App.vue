@@ -193,7 +193,7 @@ export default {
       getListTableOfTargetChrom(){
         let result = []
         this.source.map(el => {
-          if(this.checkSourceBetweenX1X2(el)) {
+          if(this.checkSourceBetweenX1X2(el) && this.checkTargetByScale(el)) {
             result.push(Object.assign({}, {id: el.id, svID: el.svID, sourceName: el.sourceName, sourceStart: el.sourceStart, sourceStop: el.sourceStop, strand: el.strand, targetName: el.targetName, targetStart: el.targetStart, targetStop: el.targetStop} ))
           }
         })
