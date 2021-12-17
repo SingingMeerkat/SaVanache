@@ -132,9 +132,16 @@ export default {
           return true
         }
       },
+      getMaxValue() {
+        let valueMax;
+        if(this.valueX2Unit>=10000000) {
+          valueMax = 10000000
+        }
+        return valueMax
+      },
       checkTargetByScale(el) {
         const difference = el.targetStop - el.targetStart
-        if(this.valueX1Unit<=difference && this.valueX2Unit>=difference) {
+        if((this.valueX1Unit<=difference && this.valueX2Unit>=difference) || (this.valueX1Unit<=difference && this.getMaxValue() < difference)) {
           return true
         }
       },
