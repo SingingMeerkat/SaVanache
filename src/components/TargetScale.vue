@@ -63,10 +63,12 @@ export default {
       }
     },
   mounted() {
+    //build the slider scale on the axis
     this.axis(d3.scaleLog().domain([50, 1e7]))
                 .ticks(10, "~s")
                 .render()
 
+    //slider drag
     d3.select(this.$refs['ref_track-overlay'])
         .call(
             d3.drag()

@@ -154,6 +154,7 @@ export default {
         }
       },
       getElementsBySources (index) {
+        // Here I get an array of SV with sourceName egal to the chromosome clicked
           let elementsBySources = [] 
           this.newSources.map(item => {
             return index === item.sourceName ? elementsBySources.push( Object.assign({}, {id: item.id, svID: item.svID, sourceName: item.sourceName, sourceStart: item.sourceStart, sourceStop: item.sourceStop, strand: item.strand, targetName: item.targetName, targetStart: item.targetStart, targetStop: item.targetStop, colorStart: this.getColorScale(item.sourceStart), colorStop: this.getColorScale(item.sourceStop)})) : null
@@ -161,6 +162,7 @@ export default {
           return elementsBySources  
       },
       getColorStartIndex(start) {
+        //I'm getting the index of colorStart to get a range of color between start and stop with the slice method inside getTargetByChrom()
         let indexColorStartInScale;
         indexColorStartInScale = this.getRangeDomainBetweenX1X2().indexOf(this.closestPosition(this.getRangeDomainBetweenX1X2(), start))
         this.colorRange.map((_, i ) => {
@@ -171,6 +173,7 @@ export default {
         return indexColorStartInScale
       },
       getColorStopIndex(stop) {
+        //I'm getting the index of colorStop to get a range of color between start and stop with the slice method inside getTargetByChrom()
         let indexColorStopInScale;
         indexColorStopInScale = this.getRangeDomainBetweenX1X2().indexOf(this.closestPosition(this.getRangeDomainBetweenX1X2(), stop))
         this.colorRange.map((_, i ) => {
@@ -182,6 +185,8 @@ export default {
         return indexColorStopInScale
       },
       getTargetByChrom (index) {
+          //I build a new array for each source clicked to get the targets according to the name, to the drag (checkSourceBetweenX1X2) and to the slider menu (checkTargetByScale) filters
+          //I have one array by targetName to display each targets by chart
           let result = []
           this.source.map((el) => {
               if(el.targetName === index && this.checkSourceBetweenX1X2(el) && this.checkTargetByScale(el)) {
@@ -191,6 +196,7 @@ export default {
           return result
       },
       getListTableOfTargetChrom(){
+        //Here I need only one array with all the targets by source with the filters to display on the table
         let result = []
         this.source.map(el => {
           if(this.checkSourceBetweenX1X2(el) && this.checkTargetByScale(el)) {
@@ -200,6 +206,7 @@ export default {
         return result       
       },      
       displayCurrentChrom(id, chrom) {
+        //Toggle function to display the chromosome clicked
           this.name = id
           this.chromosome = chrom
           this.display = true
@@ -210,8 +217,6 @@ export default {
       ...mapState({
         x1: 'x1',
         x2: 'x2',
-        x1Target: 'x1Target',
-        x2Target: 'x2Target',
         valueX1Unit: 'valueX1Unit',
         valueX2Unit: 'valueX2Unit'
       }),
@@ -222,6 +227,7 @@ export default {
         postX2: 'getPostX2'
       }),
       getColorScale() {
+        // d3.js color scale
         let colorRange = this.getColorRangeDrag()
         let domainArr = this.getDomainArr()
         let colorScale = d3.scaleLinear()

@@ -33,6 +33,7 @@
 
 
 export default {
+    //Table component where I display all the available targets according to variations (drag) and size (slider menu) filters
   name: "Table",
   props: [
     "getListTableOfTargetChrom",

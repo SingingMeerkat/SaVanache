@@ -108,6 +108,7 @@ export default {
       return y;
     },
     getTargetPositive() {
+      //Display target above because it's a "+" strand, I push the result of this filter inside a new array
       let newTarget = [];
       if (typeof this.target != "undefined" && this.target.length > 0) {
         this.target.map((el) => {
@@ -138,6 +139,7 @@ export default {
       return newTarget;
     },
     getTargetNegative() {
+      //Display target above because it's a "-" strand, I push the result of this filter inside a new array
       let newTarget = [];
       if (typeof this.target != "undefined" && this.target.length > 0) {
         this.target.map((el) => {

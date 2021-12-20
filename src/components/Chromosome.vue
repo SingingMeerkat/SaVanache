@@ -58,6 +58,7 @@ export default {
   },
   created() {},
   mounted() {
+    //d3.js drag method to move the black clamps
     d3.select(this.$refs['ref_track-overlay'])
         .call(
             d3.drag()
@@ -96,6 +97,7 @@ export default {
         set (value) { this.updateX2(value) }
     },
     stops() {
+      //this is an array to build my linear gradient according to the drag of each black clamps at the right and at the left of the chromosome
       let stopArr = [
         {
           key: "farLeft",
@@ -224,6 +226,7 @@ export default {
         return this.path(this.chromosome);
     },
     invertedLine() {
+      // I use this module svg-path-utils to invert the coordinate to from right to left and the path is also reversed like a mirror
       const inverse_d = utils.inversePath(this.invertedPath(this.chromosome));
       let temp=[...inverse_d]
       temp.shift()
