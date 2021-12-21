@@ -9,7 +9,7 @@ export default new Vuex.Store({
   state: {
     chromosomes : chromosomes,
     sources : sources,
-    height: 480,
+    height: 400,
     width: 1200,
     chartWidth: 400,
     x1: 0,

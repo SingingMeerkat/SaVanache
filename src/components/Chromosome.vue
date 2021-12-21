@@ -51,7 +51,7 @@ export default {
     return {
       marginTop: 20,
       marginRight: 0,
-      marginBottom: 360,
+      marginBottom: 200,
       marginLeft: 0,
       domainY: null,
     };
