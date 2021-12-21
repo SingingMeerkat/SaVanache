@@ -1,7 +1,7 @@
 <template>
   <div class="chart-vue">
     <svg height="60" :width="chartWidth">
-      <g v-for="(d, index) in getTargetPositive" :key="index" class="css">
+      <g v-for="(d, index) in getTargetPositive" :key="index">
         <defs>
           <linearGradient
             :id="`gradchartpos${d.svID}`"
@@ -37,7 +37,7 @@
       </g>
     </svg>
     <svg height="60" :width="chartWidth">
-      <g v-for="(d, index) in getTargetNegative" :key="index" class="css">
+      <g v-for="(d, index) in getTargetNegative" :key="index">
         <defs>
           <linearGradient
             :id="`gradchartneg${d.svID}`"
@@ -199,7 +199,6 @@ export default {
 .chart-vue {
   height: 250px; 
   width: 400px;
-  position: relative;
   svg {
     &:hover {
       cursor: pointer
@@ -208,10 +207,5 @@ export default {
   }
 
 }
-
-
-
-
-
 
 </style>
