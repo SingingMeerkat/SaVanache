@@ -1,7 +1,7 @@
 <template>
   <div class="chart-vue">
     <svg height="60" :width="chartWidth">
-      <g v-for="(d, index) in getTargetPositive" :key="index">
+      <g v-for="(d, index) in getTargetPositive" :key="index" class="css">
         <defs>
           <linearGradient
             :id="`gradchartpos${d.svID}`"
@@ -19,7 +19,8 @@
           </linearGradient>
         </defs>
         <rect
-          :x="d.targetStart"
+          v-tooltip.right-start="`SvID: ${d.svID} <br> Start: ${d.targetStart} <br> Stop: ${d.targetStop}`"
+          :x="d.targetStartPX"
           :y="50-(index++)*10"
           height="5"
           :width="d.targetWidth + 10"
@@ -31,13 +32,12 @@
       <text x="80" y="180" font-family="Arial" font-size="9">
         {{ index }}
       </text>
-
       <g>
         <path fill="none" stroke="#9579a6" stroke-width="2" :d="line"></path>
       </g>
     </svg>
     <svg height="60" :width="chartWidth">
-      <g v-for="(d, index) in getTargetNegative" :key="index">
+      <g v-for="(d, index) in getTargetNegative" :key="index" class="css">
         <defs>
           <linearGradient
             :id="`gradchartneg${d.svID}`"
@@ -55,7 +55,8 @@
           </linearGradient>
         </defs>
         <rect
-          :x="d.targetStart"
+          v-tooltip="`SvID: ${d.svID} <br> Start: ${d.targetStart} <br> Stop: ${d.targetStop}`"
+          :x="d.targetStartPX"
           :y="`${index * 10}`"
           height="5"
           :width="d.targetWidth + 10"
@@ -68,6 +69,10 @@
 
 <script>
 import * as d3 from "d3";
+import Vue from 'vue'
+import VTooltip from 'v-tooltip'
+// Doc : https://www.npmjs.com/package/v-tooltip
+Vue.use(VTooltip)
 
 export default {
   name: "Chart",
@@ -91,7 +96,8 @@ export default {
   },
   mounted() {},
   created() {},
-  methods: {},
+  methods: {
+  },
   computed: {
     getScaleX() {
       let x = d3
@@ -124,8 +130,10 @@ export default {
                   sourceStop: el.sourceStop,
                   strand: el.strand,
                   targetName: el.targetName,
-                  targetStart: this.getScaleX(el.targetStart),
-                  targetStop: this.getScaleX(el.targetStop),
+                  targetStart: el.targetStart,
+                  targetStop: el.targetStop,
+                  targetStartPX: this.getScaleX(el.targetStart),
+                  targetStopPX: this.getScaleX(el.targetStop),
                   targetWidth:this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart),
                   colorStart: el.colorStart,
                   colorStop: el.colorStop,
@@ -139,7 +147,7 @@ export default {
       return newTarget;
     },
     getTargetNegative() {
-      //Display target above because it's a "-" strand, I push the result of this filter inside a new array
+      //Display target below because it's a "-" strand, I push the result of this filter inside a new array
       let newTarget = [];
       if (typeof this.target != "undefined" && this.target.length > 0) {
         this.target.map((el) => {
@@ -155,8 +163,10 @@ export default {
                   sourceStop: el.sourceStop,
                   strand: el.strand,
                   targetName: el.targetName,
-                  targetStart: this.getScaleX(el.targetStart),
-                  targetStop: this.getScaleX(el.targetStop),
+                  targetStart: el.targetStart,
+                  targetStop: el.targetStop,
+                  targetStartPX: this.getScaleX(el.targetStart),
+                  targetStopPX: this.getScaleX(el.targetStop),
                   targetWidth:(this.getScaleX(el.targetStop) - this.getScaleX(el.targetStart)),
                   colorStart: el.colorStart,
                   colorStop: el.colorStop,
@@ -187,11 +197,21 @@ export default {
 
 <style lang="scss" scoped>
 .chart-vue {
-  height: 250px;
+  height: 250px; 
+  width: 400px;
+  position: relative;
   svg {
     &:hover {
-      cursor: pointer;
+      cursor: pointer
     }
+
   }
+
 }
+
+
+
+
+
+
 </style>
